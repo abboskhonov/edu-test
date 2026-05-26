@@ -48,6 +48,7 @@ function AdminLayout() {
               <Link
                 key={item.href}
                 to={item.href}
+                activeOptions={{ exact: true }}
                 activeProps={{ className: "bg-primary/5 text-primary" }}
                 inactiveProps={{ className: "text-muted-foreground hover:bg-muted hover:text-foreground" }}
                 className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
