@@ -12,7 +12,7 @@ function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    signUp.mutate({ data: { email, password, name } } as any)
+    signUp.mutate({ email, password, name } as any)
   }
 
   return (

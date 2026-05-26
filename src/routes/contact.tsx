@@ -31,7 +31,7 @@ function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    contactMutation.mutate({ data: form } as any)
+    contactMutation.mutate(form as any)
   }
 
   return (
@@ -98,7 +98,7 @@ function ContactPage() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
-                  newsletterMutation.mutate({ data: { email: newsletterEmail } } as any)
+                  newsletterMutation.mutate({ email: newsletterEmail } as any)
                 }}
                 className="mt-3 flex gap-2"
               >

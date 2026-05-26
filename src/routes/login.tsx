@@ -11,7 +11,7 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    signIn.mutate({ data: { email, password } } as any)
+    signIn.mutate({ email, password } as any)
   }
 
   return (
