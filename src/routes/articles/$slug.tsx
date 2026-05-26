@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getArticleBySlugFn } from "@/services/articles"
 import { IconArrowLeft, IconBook, IconShare } from "@tabler/icons-react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 export const Route = createFileRoute("/articles/$slug")({
   component: ArticleDetailPage,
@@ -29,8 +31,6 @@ function ArticleDetailPage() {
       </div>
     )
   }
-
-  const paragraphs = article.content?.split("\n\n") || []
 
   return (
     <div className="px-4 py-16 sm:py-24 lg:px-8">
@@ -78,32 +78,12 @@ function ArticleDetailPage() {
           </button>
         </div>
 
-        <div className="mt-10 space-y-6 text-foreground">
-          {paragraphs.map((para, i) => {
-            if (para.startsWith("## ")) {
-              return (
-                <h2 key={i} className="mt-10 text-2xl font-semibold tracking-tight text-foreground">
-                  {para.replace("## ", "")}
-                </h2>
-              )
-            }
-            if (para.startsWith("1. ") || para.startsWith("2. ") || para.startsWith("- ")) {
-              const items = para.split("\n").filter(Boolean)
-              return (
-                <ul key={i} className="ml-5 list-disc space-y-2 text-muted-foreground">
-                  {items.map((item, j) => (
-                    <li key={j} className="leading-relaxed">{item.replace(/^[-\d.]+\s*/, "")}</li>
-                  ))}
-                </ul>
-              )
-            }
-            return (
-              <p key={i} className="leading-relaxed text-muted-foreground">
-                {para}
-              </p>
-            )
-          })}
-        </div>
+        {/* Proper markdown rendering */}
+        <article className="prose prose-slate mt-10 max-w-none dark:prose-invert">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {article.content || ""}
+          </ReactMarkdown>
+        </article>
       </div>
     </div>
   )
