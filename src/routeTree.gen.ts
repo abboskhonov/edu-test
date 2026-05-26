@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
+import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResearchIndexRouteImport } from './routes/research/index'
@@ -24,8 +25,17 @@ import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
 import { Route as QuizzesIdRouteImport } from './routes/quizzes/$id'
 import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
 import { Route as AuthedDashboardIndexRouteImport } from './routes/_authed/dashboard/index'
+import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as QuizzesIdResultsRouteImport } from './routes/quizzes/$id.results'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AdminAdminUsersIndexRouteImport } from './routes/_admin/admin/users/index'
+import { Route as AdminAdminResourcesIndexRouteImport } from './routes/_admin/admin/resources/index'
+import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
+import { Route as AdminAdminContactsIndexRouteImport } from './routes/_admin/admin/contacts/index'
+import { Route as AdminAdminArticlesIndexRouteImport } from './routes/_admin/admin/articles/index'
+import { Route as AdminAdminQuizzesIdRouteImport } from './routes/_admin/admin/quizzes/$id'
+import { Route as AdminAdminArticlesCreateRouteImport } from './routes/_admin/admin/articles/create'
+import { Route as AdminAdminArticlesIdRouteImport } from './routes/_admin/admin/articles/$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -59,6 +69,10 @@ const AboutRoute = AboutRouteImport.update({
 } as any)
 const AuthedRouteRoute = AuthedRouteRouteImport.update({
   id: '/_authed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -101,6 +115,11 @@ const AuthedDashboardIndexRoute = AuthedDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const QuizzesIdResultsRoute = QuizzesIdResultsRouteImport.update({
   id: '/results',
   path: '/results',
@@ -110,6 +129,48 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAdminUsersIndexRoute = AdminAdminUsersIndexRouteImport.update({
+  id: '/admin/users/',
+  path: '/admin/users/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminResourcesIndexRoute =
+  AdminAdminResourcesIndexRouteImport.update({
+    id: '/admin/resources/',
+    path: '/admin/resources/',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
+const AdminAdminQuizzesIndexRoute = AdminAdminQuizzesIndexRouteImport.update({
+  id: '/admin/quizzes/',
+  path: '/admin/quizzes/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminContactsIndexRoute = AdminAdminContactsIndexRouteImport.update({
+  id: '/admin/contacts/',
+  path: '/admin/contacts/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminArticlesIndexRoute = AdminAdminArticlesIndexRouteImport.update({
+  id: '/admin/articles/',
+  path: '/admin/articles/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminQuizzesIdRoute = AdminAdminQuizzesIdRouteImport.update({
+  id: '/admin/quizzes/$id',
+  path: '/admin/quizzes/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminArticlesCreateRoute =
+  AdminAdminArticlesCreateRouteImport.update({
+    id: '/admin/articles/create',
+    path: '/admin/articles/create',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
+const AdminAdminArticlesIdRoute = AdminAdminArticlesIdRouteImport.update({
+  id: '/admin/articles/$id',
+  path: '/admin/articles/$id',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -128,7 +189,16 @@ export interface FileRoutesByFullPath {
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/quizzes/$id/results': typeof QuizzesIdResultsRoute
+  '/admin/': typeof AdminAdminIndexRoute
   '/dashboard/': typeof AuthedDashboardIndexRoute
+  '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
+  '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/admin/articles/': typeof AdminAdminArticlesIndexRoute
+  '/admin/contacts/': typeof AdminAdminContactsIndexRoute
+  '/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
+  '/admin/resources/': typeof AdminAdminResourcesIndexRoute
+  '/admin/users/': typeof AdminAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -146,11 +216,21 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/quizzes/$id/results': typeof QuizzesIdResultsRoute
+  '/admin': typeof AdminAdminIndexRoute
   '/dashboard': typeof AuthedDashboardIndexRoute
+  '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
+  '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/admin/articles': typeof AdminAdminArticlesIndexRoute
+  '/admin/contacts': typeof AdminAdminContactsIndexRoute
+  '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
+  '/admin/resources': typeof AdminAdminResourcesIndexRoute
+  '/admin/users': typeof AdminAdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteRouteWithChildren
   '/_authed': typeof AuthedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
@@ -166,7 +246,16 @@ export interface FileRoutesById {
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/quizzes/$id/results': typeof QuizzesIdResultsRoute
+  '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_authed/dashboard/': typeof AuthedDashboardIndexRoute
+  '/_admin/admin/articles/$id': typeof AdminAdminArticlesIdRoute
+  '/_admin/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/_admin/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/_admin/admin/articles/': typeof AdminAdminArticlesIndexRoute
+  '/_admin/admin/contacts/': typeof AdminAdminContactsIndexRoute
+  '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
+  '/_admin/admin/resources/': typeof AdminAdminResourcesIndexRoute
+  '/_admin/admin/users/': typeof AdminAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -186,7 +275,16 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/api/auth/$'
     | '/quizzes/$id/results'
+    | '/admin/'
     | '/dashboard/'
+    | '/admin/articles/$id'
+    | '/admin/articles/create'
+    | '/admin/quizzes/$id'
+    | '/admin/articles/'
+    | '/admin/contacts/'
+    | '/admin/quizzes/'
+    | '/admin/resources/'
+    | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -204,10 +302,20 @@ export interface FileRouteTypes {
     | '/resources'
     | '/api/auth/$'
     | '/quizzes/$id/results'
+    | '/admin'
     | '/dashboard'
+    | '/admin/articles/$id'
+    | '/admin/articles/create'
+    | '/admin/quizzes/$id'
+    | '/admin/articles'
+    | '/admin/contacts'
+    | '/admin/quizzes'
+    | '/admin/resources'
+    | '/admin/users'
   id:
     | '__root__'
     | '/'
+    | '/_admin'
     | '/_authed'
     | '/about'
     | '/contact'
@@ -223,11 +331,21 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/api/auth/$'
     | '/quizzes/$id/results'
+    | '/_admin/admin/'
     | '/_authed/dashboard/'
+    | '/_admin/admin/articles/$id'
+    | '/_admin/admin/articles/create'
+    | '/_admin/admin/quizzes/$id'
+    | '/_admin/admin/articles/'
+    | '/_admin/admin/contacts/'
+    | '/_admin/admin/quizzes/'
+    | '/_admin/admin/resources/'
+    | '/_admin/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
@@ -295,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -351,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedDashboardIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_admin/admin/': {
+      id: '/_admin/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/quizzes/$id/results': {
       id: '/quizzes/$id/results'
       path: '/results'
@@ -365,8 +497,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_admin/admin/users/': {
+      id: '/_admin/admin/users/'
+      path: '/admin/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminAdminUsersIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/resources/': {
+      id: '/_admin/admin/resources/'
+      path: '/admin/resources'
+      fullPath: '/admin/resources/'
+      preLoaderRoute: typeof AdminAdminResourcesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/quizzes/': {
+      id: '/_admin/admin/quizzes/'
+      path: '/admin/quizzes'
+      fullPath: '/admin/quizzes/'
+      preLoaderRoute: typeof AdminAdminQuizzesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/contacts/': {
+      id: '/_admin/admin/contacts/'
+      path: '/admin/contacts'
+      fullPath: '/admin/contacts/'
+      preLoaderRoute: typeof AdminAdminContactsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/articles/': {
+      id: '/_admin/admin/articles/'
+      path: '/admin/articles'
+      fullPath: '/admin/articles/'
+      preLoaderRoute: typeof AdminAdminArticlesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/quizzes/$id': {
+      id: '/_admin/admin/quizzes/$id'
+      path: '/admin/quizzes/$id'
+      fullPath: '/admin/quizzes/$id'
+      preLoaderRoute: typeof AdminAdminQuizzesIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/articles/create': {
+      id: '/_admin/admin/articles/create'
+      path: '/admin/articles/create'
+      fullPath: '/admin/articles/create'
+      preLoaderRoute: typeof AdminAdminArticlesCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/articles/$id': {
+      id: '/_admin/admin/articles/$id'
+      path: '/admin/articles/$id'
+      fullPath: '/admin/articles/$id'
+      preLoaderRoute: typeof AdminAdminArticlesIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
+
+interface AdminRouteRouteChildren {
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+  AdminAdminArticlesIdRoute: typeof AdminAdminArticlesIdRoute
+  AdminAdminArticlesCreateRoute: typeof AdminAdminArticlesCreateRoute
+  AdminAdminQuizzesIdRoute: typeof AdminAdminQuizzesIdRoute
+  AdminAdminArticlesIndexRoute: typeof AdminAdminArticlesIndexRoute
+  AdminAdminContactsIndexRoute: typeof AdminAdminContactsIndexRoute
+  AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
+  AdminAdminResourcesIndexRoute: typeof AdminAdminResourcesIndexRoute
+  AdminAdminUsersIndexRoute: typeof AdminAdminUsersIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
+  AdminAdminArticlesIdRoute: AdminAdminArticlesIdRoute,
+  AdminAdminArticlesCreateRoute: AdminAdminArticlesCreateRoute,
+  AdminAdminQuizzesIdRoute: AdminAdminQuizzesIdRoute,
+  AdminAdminArticlesIndexRoute: AdminAdminArticlesIndexRoute,
+  AdminAdminContactsIndexRoute: AdminAdminContactsIndexRoute,
+  AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
+  AdminAdminResourcesIndexRoute: AdminAdminResourcesIndexRoute,
+  AdminAdminUsersIndexRoute: AdminAdminUsersIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
 
 interface AuthedRouteRouteChildren {
   AuthedDashboardIndexRoute: typeof AuthedDashboardIndexRoute
@@ -394,6 +610,7 @@ const QuizzesIdRouteWithChildren = QuizzesIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   AuthedRouteRoute: AuthedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,

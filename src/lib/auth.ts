@@ -25,6 +25,14 @@ export const auth = betterAuth({
     // Add social providers here if needed
   },
   plugins: [tanstackStartCookies()],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "teacher",
+      },
+    },
+  },
 })
 
 export type AuthSession = typeof auth.$Infer.Session

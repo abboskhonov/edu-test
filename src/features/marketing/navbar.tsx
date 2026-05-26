@@ -59,6 +59,14 @@ export function Navbar() {
                 >
                   {user.name || user.email}
                 </Link>
+                {(user as any).role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="rounded-full px-3 py-1.5 text-sm font-medium text-amber-600 transition-colors hover:bg-amber-50"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <button
                   onClick={() => signOut.mutate({} as any)}
                   className="h-8 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.96] transition-transform"
@@ -124,6 +132,15 @@ export function Navbar() {
                   >
                     Dashboard
                   </Link>
+                  {(user as any).role === "admin" && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileOpen(false)}
+                      className="rounded-xl px-4 py-3 text-sm font-medium text-amber-600 transition-colors hover:bg-amber-50"
+                    >
+                      Admin Panel
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       signOut.mutate({} as any)
