@@ -32,9 +32,9 @@ const navItems = [
 
 function AdminLayout() {
   return (
-    <div className="flex h-[calc(100dvh-64px)]">
-      {/* Sidebar — fixed width, independent scroll */}
-      <aside className="hidden h-full w-64 shrink-0 overflow-y-auto border-r border-border/60 bg-card lg:block">
+    <div className="flex min-h-[calc(100dvh-64px)]">
+      {/* Sidebar — fixed to viewport, full height, scrollable */}
+      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100dvh-64px)] w-64 overflow-y-auto border-r border-border/60 bg-card lg:block">
         <div className="p-6">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -70,8 +70,11 @@ function AdminLayout() {
         </div>
       </aside>
 
-      {/* Main content — independent scroll */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-8">
+      {/* Spacer — prevents main content from sliding under the fixed sidebar */}
+      <div className="hidden w-64 shrink-0 lg:block" />
+
+      {/* Main content — scrollable */}
+      <main className="flex-1 p-4 sm:p-8">
         <Outlet />
       </main>
     </div>
