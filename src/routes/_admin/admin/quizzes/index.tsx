@@ -5,6 +5,7 @@ import { IconPencil, IconTrash, IconArrowLeft } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/_admin/admin/quizzes/")({
   component: AdminQuizzesPage,
+  staleTime: 2 * 60 * 1000,
   loader: async () => {
     const quizzes = await adminGetQuizzesFn()
     return { quizzes }

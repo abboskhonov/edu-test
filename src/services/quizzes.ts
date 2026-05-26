@@ -70,8 +70,9 @@ export const submitQuizAttemptFn = createServerFn({ method: "POST" })
 
     const passed = percentage >= 60
 
+    const attemptId = crypto.randomUUID()
     await db.insert(quizAttempts).values({
-      id: crypto.randomUUID(),
+      id: attemptId,
       userId,
       quizId,
       score,
@@ -85,6 +86,7 @@ export const submitQuizAttemptFn = createServerFn({ method: "POST" })
     })
 
     return {
+      attemptId,
       score,
       maxScore,
       percentage,
@@ -108,4 +110,16 @@ export const getQuizAttemptsByQuizFn = createServerFn({ method: "GET" })
     return db.select().from(quizAttempts)
       .where(and(eq(quizAttempts.userId, userId), eq(quizAttempts.quizId, quizId)))
       .orderBy(desc(quizAttempts.completedAt))
+  })
+
+export const getQuizAttemptByIdFn = createServerFn({ method: "GET" })
+  .handler(async (ctx) => {
+    const { id } = ctx.data as unknown as { id: string }
+    const result = await db.select().from(quizAttempts).where(eq(quizAttempts.id, id)).limit(1)
+    if (!result[0]) return null
+    const attempt = result[0]
+    return {
+      ...attempt,
+      answers: attempt.answers ? JSON.parse(attempt.answers) : [],
+    }
   })

@@ -5,6 +5,7 @@ import { IconPlus, IconPencil, IconTrash, IconArrowLeft } from "@tabler/icons-re
 
 export const Route = createFileRoute("/_admin/admin/articles/")({
   component: AdminArticlesPage,
+  staleTime: 2 * 60 * 1000,
   loader: async () => {
     const articles = await adminGetArticlesFn()
     return { articles }

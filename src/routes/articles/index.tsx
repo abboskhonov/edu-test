@@ -5,6 +5,7 @@ import { IconBook, IconArrowRight } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/articles/")({
   component: ArticlesPage,
+  staleTime: 5 * 60 * 1000,
   loader: async () => {
     const articles = await getArticlesFn()
     return { articles }

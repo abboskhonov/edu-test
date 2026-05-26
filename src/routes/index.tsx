@@ -14,6 +14,7 @@ import {
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  staleTime: 5 * 60 * 1000,
   loader: async () => {
     const [articles, quizzes] = await Promise.all([
       getFeaturedArticlesFn(),

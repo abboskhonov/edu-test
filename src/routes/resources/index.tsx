@@ -5,6 +5,7 @@ import { IconBook, IconCertificate, IconLibrary, IconFileText, IconDownload } fr
 
 export const Route = createFileRoute("/resources/")({
   component: ResourcesPage,
+  staleTime: 5 * 60 * 1000,
   loader: async () => {
     const resources = await getResourcesFn()
     return { resources }

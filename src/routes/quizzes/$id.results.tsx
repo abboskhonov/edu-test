@@ -1,17 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { useQuery } from "@tanstack/react-query"
+import { getQuizAttemptByIdFn } from "@/services/quizzes"
 import { IconArrowLeft, IconTrophy, IconCheck, IconX, IconBook, IconArrowRight, IconRotateClockwise } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/quizzes/$id/results")({
   component: QuizResultsPage,
+  staleTime: 60 * 1000,
 })
 
 function QuizResultsPage() {
   const { id } = Route.useParams()
-  const search = Route.useSearch() as { result?: string }
+  const search = Route.useSearch() as { attemptId?: string }
 
-  const result = search.result ? JSON.parse(search.result) : null
+  const { data: attempt } = useQuery({
+    queryKey: ["quiz-attempt", search.attemptId],
+    queryFn: () => search.attemptId ? getQuizAttemptByIdFn({ data: { id: search.attemptId } } as any) : null,
+    enabled: !!search.attemptId,
+  })
 
-  if (!result) {
+  if (!attempt) {
     return (
       <div className="px-4 py-24 text-center">
         <h1 className="text-2xl font-semibold">No results found</h1>
@@ -22,7 +29,7 @@ function QuizResultsPage() {
     )
   }
 
-  const { score, maxScore, percentage, certificateTier, answers } = result
+  const { score, maxScore, percentage, certificateTier, answers } = attempt
 
   const tierConfig: Record<string, { label: string; color: string; icon: typeof IconTrophy; message: string }> = {
     Expert: { label: "Expert", color: "text-amber-600 bg-amber-500/10 border-amber-200", icon: IconTrophy, message: "Outstanding! You demonstrate deep mastery of this domain." },
@@ -31,7 +38,7 @@ function QuizResultsPage() {
     Beginner: { label: "Beginner", color: "text-rose-600 bg-rose-500/10 border-rose-200", icon: IconBook, message: "Everyone starts somewhere. Explore the learning resources to build your foundation." },
   }
 
-  const tier = tierConfig[certificateTier] || tierConfig.Beginner
+  const tier = tierConfig[certificateTier || "Beginner"] || tierConfig.Beginner
   const TierIcon = tier.icon
 
   return (

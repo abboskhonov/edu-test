@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { IconFileText } from "@tabler/icons-react"
 
-export const Route = createFileRoute("/research/")({ component: ResearchPage })
+export const Route = createFileRoute("/research/")({
+  component: ResearchPage,
+  staleTime: 5 * 60 * 1000,
+})
 
 function ResearchPage() {
   return (

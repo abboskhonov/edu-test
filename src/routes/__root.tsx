@@ -1,7 +1,8 @@
 import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "@/lib/query-client"
 
 import { Navbar } from "@/features/marketing/navbar"
 import { Footer } from "@/features/marketing/footer"
@@ -9,7 +10,7 @@ import { getSessionFn } from "@/services/auth"
 import type { AuthSession } from "@/lib/auth"
 import appCss from "../styles.css?url"
 
-const queryClient = new QueryClient()
+
 
 interface MyRouterContext {
   session: AuthSession | null

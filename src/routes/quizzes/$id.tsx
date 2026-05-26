@@ -1,12 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
 import { useSuspenseQuery, useMutation } from "@tanstack/react-query"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { getQuizByIdFn, submitQuizAttemptFn } from "@/services/quizzes"
 import { useAuth } from "@/hooks/use-auth"
 import { IconArrowLeft, IconArrowRight, IconClock, IconCheck, IconFlag } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/quizzes/$id")({
   component: QuizPage,
+  staleTime: 5 * 60 * 1000,
   loader: async ({ params }) => {
     const data = await getQuizByIdFn({ data: { id: params.id } } as any)
     return { quizData: data }
@@ -29,16 +30,63 @@ function QuizPage() {
   const [timeLeft, setTimeLeft] = useState((quizData?.quiz?.timeLimitMinutes || 20) * 60)
   const [submitted, setSubmitted] = useState(false)
 
+  // Use refs to avoid stale closures in timer
+  const submittedRef = useRef(false)
+  const quizDataRef = useRef(quizData)
+  const selectedAnswersRef = useRef(selectedAnswers)
+  const timeLeftRef = useRef(timeLeft)
+
+  useEffect(() => { quizDataRef.current = quizData }, [quizData])
+  useEffect(() => { selectedAnswersRef.current = selectedAnswers }, [selectedAnswers])
+  useEffect(() => { timeLeftRef.current = timeLeft }, [timeLeft])
+  useEffect(() => { submittedRef.current = submitted }, [submitted])
+
   const questions = quizData?.questions || []
   const currentQ = questions[currentIndex]
 
+  const submitMutation = useMutation({
+    mutationFn: submitQuizAttemptFn,
+    onSuccess: (result) => {
+      navigate({ to: "/quizzes/$id/results", params: { id }, search: { attemptId: result.attemptId } })
+    },
+  })
+
+  // Submit function using refs to avoid stale closures
+  const doSubmit = () => {
+    if (submittedRef.current) return
+    submittedRef.current = true
+    setSubmitted(true)
+
+    const quiz = quizDataRef.current?.quiz
+    const qList = quizDataRef.current?.questions || []
+    const timeSpent = ((quiz?.timeLimitMinutes || 20) * 60) - timeLeftRef.current
+    const answers = qList.map((_, i) => selectedAnswersRef.current[i] ?? -1)
+
+    // Require login — use user's real ID
+    const userId = user?.id
+    if (!userId) {
+      navigate({ to: "/login" })
+      return
+    }
+
+    submitMutation.mutate({
+      data: {
+        userId,
+        quizId: id,
+        answers,
+        timeSpentSeconds: timeSpent,
+      },
+    } as any)
+  }
+
+  // Timer
   useEffect(() => {
-    if (timeLeft <= 0 || submitted) return
+    if (timeLeft <= 0 || submittedRef.current) return
     const timer = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
           clearInterval(timer)
-          handleSubmit()
+          doSubmit()
           return 0
         }
         return t - 1
@@ -46,28 +94,6 @@ function QuizPage() {
     }, 1000)
     return () => clearInterval(timer)
   }, [timeLeft, submitted])
-
-  const submitMutation = useMutation({
-    mutationFn: submitQuizAttemptFn,
-    onSuccess: (result) => {
-      navigate({ to: "/quizzes/$id/results", params: { id }, search: { result: JSON.stringify(result) } })
-    },
-  })
-
-  const handleSubmit = useCallback(() => {
-    if (submitted) return
-    setSubmitted(true)
-    const timeSpent = ((quizData?.quiz?.timeLimitMinutes || 20) * 60) - timeLeft
-    const answers = questions.map((_, i) => selectedAnswers[i] ?? -1)
-    submitMutation.mutate({
-      data: {
-        userId: user?.id || "guest",
-        quizId: id,
-        answers,
-        timeSpentSeconds: timeSpent,
-      },
-    } as any)
-  }, [submitted, quizData, timeLeft, questions, selectedAnswers, user, id, submitMutation])
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -199,7 +225,7 @@ function QuizPage() {
             </button>
           ) : (
             <button
-              onClick={handleSubmit}
+              onClick={doSubmit}
               disabled={submitMutation.isPending}
               className="inline-flex h-10 items-center gap-1 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96] disabled:opacity-50"
             >
@@ -209,6 +235,18 @@ function QuizPage() {
             </button>
           )}
         </div>
+
+        {/* Login warning for guests */}
+        {!user && (
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <p className="font-medium">You are not logged in.</p>
+            <p className="mt-1">
+              <Link to="/login" className="font-medium underline">Log in</Link> or{" "}
+              <Link to="/register" className="font-medium underline">register</Link>{" "}
+              to save your quiz results and earn certificates.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

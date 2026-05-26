@@ -5,6 +5,7 @@ import { IconArrowLeft, IconMail } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/_admin/admin/contacts/")({
   component: AdminContactsPage,
+  staleTime: 2 * 60 * 1000,
   loader: async () => {
     const contacts = await adminGetContactsFn()
     return { contacts }

@@ -8,6 +8,7 @@ import { IconBook, IconCertificate, IconDownload, IconStar, IconArrowRight, Icon
 
 export const Route = createFileRoute("/_authed/dashboard/")({
   component: DashboardPage,
+  staleTime: 60 * 1000,
   loader: async ({ context }) => {
     const userId = context.session?.user?.id
     if (!userId) return { stats: null, dashboard: null, attempts: [], saved: [] }
@@ -29,24 +30,28 @@ function DashboardPage() {
     queryKey: ["dashboard-stats", userId],
     queryFn: () => getDashboardStatsFn({ data: { userId: userId! } } as any),
     enabled: !!userId,
+    staleTime: 60 * 1000,
   })
 
   const { data: dashboard } = useQuery({
     queryKey: ["dashboard", userId],
     queryFn: () => getDashboardDataFn({ data: { userId: userId! } } as any),
     enabled: !!userId,
+    staleTime: 60 * 1000,
   })
 
   const { data: attempts } = useQuery({
     queryKey: ["quiz-attempts", userId],
     queryFn: () => getQuizAttemptsFn({ data: { userId: userId! } } as any),
     enabled: !!userId,
+    staleTime: 60 * 1000,
   })
 
   const { data: saved } = useQuery({
     queryKey: ["saved-articles", userId],
     queryFn: () => getSavedArticlesFn({ data: { userId: userId! } } as any),
     enabled: !!userId,
+    staleTime: 60 * 1000,
   })
 
   if (!userId) {

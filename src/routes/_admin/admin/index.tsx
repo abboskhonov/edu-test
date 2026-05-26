@@ -14,6 +14,7 @@ import {
 
 export const Route = createFileRoute("/_admin/admin/")({
   component: AdminOverviewPage,
+  staleTime: 2 * 60 * 1000,
   loader: async () => {
     const [articles, quizzes, users, contacts] = await Promise.all([
       adminGetArticlesFn(),

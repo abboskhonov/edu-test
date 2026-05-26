@@ -5,6 +5,7 @@ import { IconArrowLeft, IconBook, IconShare } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/articles/$slug")({
   component: ArticleDetailPage,
+  staleTime: 5 * 60 * 1000,
   loader: async ({ params }) => {
     const article = await getArticleBySlugFn({ data: { slug: params.slug } } as any)
     return { article }
