@@ -4,13 +4,17 @@ import { useState, useEffect, useRef } from "react"
 import { getQuizByIdFn, submitQuizAttemptFn } from "@/services/quizzes"
 import { useAuth } from "@/hooks/use-auth"
 import { IconArrowLeft, IconArrowRight, IconClock, IconCheck, IconFlag } from "@tabler/icons-react"
+import { QuizPageSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/quizzes/$id")({
   component: QuizPage,
+  pendingComponent: QuizPageSkeleton,
   staleTime: 5 * 60 * 1000,
-  loader: async ({ params }) => {
-    const data = await getQuizByIdFn({ data: { id: params.id } } as any)
-    return { quizData: data }
+  loader: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["quiz", params.id],
+      queryFn: () => getQuizByIdFn({ data: { id: params.id } } as any),
+    })
   },
 })
 

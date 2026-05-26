@@ -2,13 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { adminGetContactsFn } from "@/services/admin/contacts"
 import { IconArrowLeft, IconMail } from "@tabler/icons-react"
+import { AdminContactsSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/contacts/")({
   component: AdminContactsPage,
+  pendingComponent: AdminContactsSkeleton,
   staleTime: 2 * 60 * 1000,
-  loader: async () => {
-    const contacts = await adminGetContactsFn()
-    return { contacts }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-contacts"],
+      queryFn: adminGetContactsFn,
+    })
   },
 })
 

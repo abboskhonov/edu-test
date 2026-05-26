@@ -1,14 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminGetUsersFn, adminUpdateUserRoleFn } from "@/services/admin/users"
-import { IconArrowLeft } from "@tabler/icons-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { IconArrowLeft, IconChevronDown } from "@tabler/icons-react"
+import { AdminTableSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/users/")({
   component: AdminUsersPage,
+  pendingComponent: AdminTableSkeleton,
   staleTime: 2 * 60 * 1000,
-  loader: async () => {
-    const users = await adminGetUsersFn()
-    return { users }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-users"],
+      queryFn: adminGetUsersFn,
+    })
   },
 })
 
@@ -69,18 +79,38 @@ function AdminUsersPage() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-5 py-4">
-                  <select
-                    value={u.role}
-                    onChange={(e) => {
-                      updateRoleMutation.mutate({
-                        data: { id: u.id, role: e.target.value },
-                      } as any)
-                    }}
-                    className="h-8 rounded-lg border border-border bg-background px-2 text-xs outline-none"
-                  >
-                    <option value="teacher">Teacher</option>
-                    <option value="admin">Admin</option>
-                  </select>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        u.role === "admin"
+                          ? "bg-rose-500/10 text-rose-700"
+                          : "bg-blue-500/10 text-blue-700"
+                      }`}>
+                        {u.role}
+                      </span>
+                      <IconChevronDown size={12} className="text-muted-foreground" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="min-w-[var(--anchor-width)]">
+                      {["teacher", "admin"].map((role) => (
+                        <DropdownMenuItem
+                          key={role}
+                          onClick={() => {
+                            updateRoleMutation.mutate({
+                              data: { id: u.id, role },
+                            } as any)
+                          }}
+                        >
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                            role === "admin"
+                              ? "bg-rose-500/10 text-rose-700"
+                              : "bg-blue-500/10 text-blue-700"
+                          }`}>
+                            {role}
+                          </span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </td>
               </tr>
             ))}

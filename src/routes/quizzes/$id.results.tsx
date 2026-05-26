@@ -2,9 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 import { getQuizAttemptByIdFn } from "@/services/quizzes"
 import { IconArrowLeft, IconTrophy, IconCheck, IconX, IconBook, IconArrowRight, IconRotateClockwise } from "@tabler/icons-react"
+import { QuizResultsSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/quizzes/$id/results")({
   component: QuizResultsPage,
+  pendingComponent: QuizResultsSkeleton,
   staleTime: 60 * 1000,
 })
 

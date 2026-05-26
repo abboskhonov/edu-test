@@ -2,13 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminGetArticlesFn, adminDeleteArticleFn } from "@/services/admin/articles"
 import { IconPlus, IconPencil, IconTrash, IconArrowLeft } from "@tabler/icons-react"
+import { AdminTableSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/articles/")({
   component: AdminArticlesPage,
+  pendingComponent: AdminTableSkeleton,
   staleTime: 2 * 60 * 1000,
-  loader: async () => {
-    const articles = await adminGetArticlesFn()
-    return { articles }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-articles"],
+      queryFn: adminGetArticlesFn,
+    })
   },
 })
 

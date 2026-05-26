@@ -10,10 +10,9 @@ import { getSessionFn } from "@/services/auth"
 import type { AuthSession } from "@/lib/auth"
 import appCss from "../styles.css?url"
 
-
-
 interface MyRouterContext {
   session: AuthSession | null
+  queryClient: typeof queryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

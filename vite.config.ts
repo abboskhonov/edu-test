@@ -29,6 +29,7 @@ const config = defineConfig({
   resolve: {
     alias: {
       "@noble/ciphers/utils.js": path.resolve(__dirname, "./src/shims/noble-ciphers-utils.ts"),
+      "@noble/ciphers/chacha.js": path.resolve(__dirname, "./node_modules/@noble/ciphers/esm/chacha.js"),
     },
   },
 })

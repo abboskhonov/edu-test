@@ -1,14 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { getResourcesFn } from "@/services/resources"
+import { useSuspenseQuery, useMutation } from "@tanstack/react-query"
+import { getResourcesFn, trackDownloadFn } from "@/services/resources"
+import { useAuth } from "@/hooks/use-auth"
 import { IconBook, IconCertificate, IconLibrary, IconFileText, IconDownload } from "@tabler/icons-react"
+import { PublicListSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/resources/")({
   component: ResourcesPage,
+  pendingComponent: PublicListSkeleton,
   staleTime: 5 * 60 * 1000,
-  loader: async () => {
-    const resources = await getResourcesFn()
-    return { resources }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["resources"],
+      queryFn: getResourcesFn,
+    })
   },
 })
 
@@ -24,10 +29,24 @@ const iconMap: Record<string, typeof IconBook> = {
 }
 
 function ResourcesPage() {
+  const { user } = useAuth()
   const { data: resources } = useSuspenseQuery({
     queryKey: ["resources"],
     queryFn: getResourcesFn,
   })
+
+  const downloadMutation = useMutation({
+    mutationFn: trackDownloadFn,
+  })
+
+  const handleDownload = (resource: NonNullable<typeof resources>[0]) => {
+    if (resource.fileUrl) {
+      if (user?.id) {
+        downloadMutation.mutate({ data: { userId: user.id, resourceId: resource.id } } as any)
+      }
+      window.open(resource.fileUrl, "_blank")
+    }
+  }
 
   // Group by category
   const grouped = resources?.reduce((acc, r) => {
@@ -75,7 +94,10 @@ function ResourcesPage() {
                         <span>{r.downloadCount} downloads</span>
                       </div>
                     </div>
-                    <button className="ml-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/5 text-primary transition-colors hover:bg-primary/10">
+                    <button
+                      onClick={() => handleDownload(r)}
+                      className="ml-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/5 text-primary transition-colors hover:bg-primary/10"
+                    >
                       <IconDownload size={16} />
                     </button>
                   </div>

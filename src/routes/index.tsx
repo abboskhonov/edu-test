@@ -11,16 +11,23 @@ import {
   IconLibrary,
   IconChartBar,
 } from "@tabler/icons-react"
+import { HomeSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  pendingComponent: HomeSkeleton,
   staleTime: 5 * 60 * 1000,
-  loader: async () => {
-    const [articles, quizzes] = await Promise.all([
-      getFeaturedArticlesFn(),
-      getQuizzesFn(),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData({
+        queryKey: ["featured-articles"],
+        queryFn: getFeaturedArticlesFn,
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["quizzes"],
+        queryFn: getQuizzesFn,
+      }),
     ])
-    return { articles, quizzes }
   },
 })
 

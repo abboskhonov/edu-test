@@ -1,24 +1,48 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { getArticleBySlugFn } from "@/services/articles"
-import { IconArrowLeft, IconBook, IconShare } from "@tabler/icons-react"
+import { useSuspenseQuery, useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getArticleBySlugFn, getSavedArticlesFn, toggleSaveArticleFn } from "@/services/articles"
+import { IconArrowLeft, IconBook, IconShare, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react"
+import { ArticleDetailSkeleton } from "@/components/skeletons"
+import { useAuth } from "@/hooks/use-auth"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
 export const Route = createFileRoute("/articles/$slug")({
   component: ArticleDetailPage,
+  pendingComponent: ArticleDetailSkeleton,
   staleTime: 5 * 60 * 1000,
-  loader: async ({ params }) => {
-    const article = await getArticleBySlugFn({ data: { slug: params.slug } } as any)
-    return { article }
+  loader: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["article", params.slug],
+      queryFn: () => getArticleBySlugFn({ data: { slug: params.slug } } as any),
+    })
   },
 })
 
 function ArticleDetailPage() {
   const { slug } = Route.useParams()
+  const queryClient = useQueryClient()
+  const { user } = useAuth()
+
   const { data: article } = useSuspenseQuery({
     queryKey: ["article", slug],
     queryFn: () => getArticleBySlugFn({ data: { slug } } as any),
+  })
+
+  const { data: savedArticles } = useQuery({
+    queryKey: ["saved-articles", user?.id],
+    queryFn: () => getSavedArticlesFn({ data: { userId: user!.id } } as any),
+    enabled: !!user,
+  })
+
+  const isSaved = savedArticles?.some((s) => s.article.id === article?.id)
+
+  const toggleSave = useMutation({
+    mutationFn: () => toggleSaveArticleFn({ data: { userId: user!.id, articleId: article!.id } } as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-articles", user?.id] })
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats", user?.id] })
+    },
   })
 
   if (!article) {
@@ -67,12 +91,26 @@ function ArticleDetailPage() {
               {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : ""}
             </p>
           </div>
+          {user && (
+            <button
+              onClick={() => toggleSave.mutate()}
+              disabled={toggleSave.isPending}
+              className={`ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                isSaved
+                  ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              {isSaved ? <IconBookmarkFilled size={14} /> : <IconBookmark size={14} />}
+              {isSaved ? "Saved" : "Save"}
+            </button>
+          )}
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href)
               alert("Link copied to clipboard")
             }}
-            className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <IconShare size={14} /> Share
           </button>

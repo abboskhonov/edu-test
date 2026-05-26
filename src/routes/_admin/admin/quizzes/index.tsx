@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminGetQuizzesFn, adminDeleteQuizFn } from "@/services/admin/quizzes"
-import { IconPencil, IconTrash, IconArrowLeft } from "@tabler/icons-react"
+import { IconPencil, IconTrash, IconArrowLeft, IconPlus } from "@tabler/icons-react"
+import { AdminTableSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/quizzes/")({
   component: AdminQuizzesPage,
+  pendingComponent: AdminTableSkeleton,
   staleTime: 2 * 60 * 1000,
-  loader: async () => {
-    const quizzes = await adminGetQuizzesFn()
-    return { quizzes }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-quizzes"],
+      queryFn: adminGetQuizzesFn,
+    })
   },
 })
 
@@ -38,6 +42,12 @@ function AdminQuizzesPage() {
           </div>
           <p className="mt-1 text-sm text-muted-foreground">Manage quizzes and their questions.</p>
         </div>
+        <Link
+          to="/admin/quizzes/create"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96]"
+        >
+          <IconPlus size={14} /> New Quiz
+        </Link>
       </div>
 
       <div className="mt-8 overflow-hidden rounded-2xl border border-border/60 bg-card">

@@ -2,13 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getArticlesFn } from "@/services/articles"
 import { IconBook, IconArrowRight } from "@tabler/icons-react"
+import { PublicListSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/articles/")({
   component: ArticlesPage,
+  pendingComponent: PublicListSkeleton,
   staleTime: 5 * 60 * 1000,
-  loader: async () => {
-    const articles = await getArticlesFn()
-    return { articles }
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["articles"],
+      queryFn: getArticlesFn,
+    })
   },
 })
 

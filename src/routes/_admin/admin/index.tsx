@@ -11,18 +11,31 @@ import {
   IconMessage,
   IconArrowRight,
 } from "@tabler/icons-react"
+import { DashboardSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/")({
   component: AdminOverviewPage,
+  pendingComponent: DashboardSkeleton,
   staleTime: 2 * 60 * 1000,
-  loader: async () => {
-    const [articles, quizzes, users, contacts] = await Promise.all([
-      adminGetArticlesFn(),
-      adminGetQuizzesFn(),
-      adminGetUsersFn(),
-      adminGetContactsFn(),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData({
+        queryKey: ["admin-articles"],
+        queryFn: adminGetArticlesFn,
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["admin-quizzes"],
+        queryFn: adminGetQuizzesFn,
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["admin-users"],
+        queryFn: adminGetUsersFn,
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["admin-contacts"],
+        queryFn: adminGetContactsFn,
+      }),
     ])
-    return { articles, quizzes, users, contacts }
   },
 })
 

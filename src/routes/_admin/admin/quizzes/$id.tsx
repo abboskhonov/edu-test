@@ -9,12 +9,25 @@ import {
   adminUpdateQuestionFn,
   adminDeleteQuestionFn,
 } from "@/services/admin/quizzes"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 import { IconArrowLeft, IconCheck, IconTrash, IconPlus, IconChevronDown, IconPencil } from "@tabler/icons-react"
+import { AdminFormSkeleton } from "@/components/skeletons"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export const Route = createFileRoute("/_admin/admin/quizzes/$id")({
   component: EditQuizPage,
-  loader: async ({ params }) => {
-    return { quizId: params.id }
+  pendingComponent: AdminFormSkeleton,
+  loader: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-quiz", params.id],
+      queryFn: () => adminGetQuizFn({ data: { id: params.id } } as any),
+    })
   },
 })
 
@@ -199,7 +212,7 @@ function EditQuizPage() {
       <form onSubmit={handleQuizSubmit} className="mt-8 max-w-2xl space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Title</label>
+            <Label>Title</Label>
             <input
               type="text"
               value={quizForm.title}
@@ -209,7 +222,7 @@ function EditQuizPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Slug</label>
+            <Label>Slug</Label>
             <input
               type="text"
               value={quizForm.slug}
@@ -221,7 +234,7 @@ function EditQuizPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Description</label>
+          <Label>Description</Label>
           <input
             type="text"
             value={quizForm.description}
@@ -232,7 +245,7 @@ function EditQuizPage() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Category</label>
+            <Label>Category</Label>
             <input
               type="text"
               value={quizForm.category}
@@ -241,20 +254,26 @@ function EditQuizPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Difficulty</label>
-            <select
-              value={quizForm.difficulty}
-              onChange={(e) => setQuizForm({ ...quizForm, difficulty: e.target.value })}
-              className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-              <option value="Mixed">Mixed</option>
-            </select>
+            <Label>Difficulty</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex h-11 w-full items-center justify-between rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <span>{quizForm.difficulty}</span>
+                <IconChevronDown size={14} className="text-muted-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="min-w-[var(--anchor-width)]">
+                {["Beginner", "Intermediate", "Advanced", "Mixed"].map((level) => (
+                  <DropdownMenuItem
+                    key={level}
+                    onClick={() => setQuizForm({ ...quizForm, difficulty: level })}
+                  >
+                    {level}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Time Limit (min)</label>
+            <Label>Time Limit (min)</Label>
             <input
               type="number"
               value={quizForm.timeLimitMinutes}
@@ -265,13 +284,11 @@ function EditQuizPage() {
         </div>
 
         <div className="flex items-center gap-2 pt-2">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={quizForm.active}
-            onChange={(e) => setQuizForm({ ...quizForm, active: e.target.checked })}
-            className="h-4 w-4 rounded border-border"
+            onCheckedChange={(checked) => setQuizForm({ ...quizForm, active: checked === true })}
           />
-          <span className="text-sm font-medium">Active (visible to users)</span>
+          <Label>Active (visible to users)</Label>
         </div>
 
         <button
@@ -309,7 +326,7 @@ function EditQuizPage() {
             </h3>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Question Text</label>
+              <Label>Question Text</Label>
               <textarea
                 value={questionForm.text}
                 onChange={(e) => setQuestionForm({ ...questionForm, text: e.target.value })}
@@ -320,7 +337,7 @@ function EditQuizPage() {
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-medium">Answer Options</label>
+              <Label>Answer Options</Label>
               {questionForm.options.map((opt, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <input
@@ -347,7 +364,7 @@ function EditQuizPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Explanation (shown after answering)</label>
+              <Label>Explanation (shown after answering)</Label>
               <textarea
                 value={questionForm.explanation}
                 onChange={(e) => setQuestionForm({ ...questionForm, explanation: e.target.value })}
@@ -359,7 +376,7 @@ function EditQuizPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium">Order</label>
+                <Label>Order</Label>
                 <input
                   type="number"
                   value={questionForm.order}
@@ -368,16 +385,23 @@ function EditQuizPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium">Difficulty</label>
-                <select
-                  value={questionForm.difficulty}
-                  onChange={(e) => setQuestionForm({ ...questionForm, difficulty: e.target.value })}
-                  className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
+                <Label>Difficulty</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex h-11 w-full items-center justify-between rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    <span>{questionForm.difficulty}</span>
+                    <IconChevronDown size={14} className="text-muted-foreground" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="min-w-[var(--anchor-width)]">
+                    {["Beginner", "Intermediate", "Advanced"].map((level) => (
+                      <DropdownMenuItem
+                        key={level}
+                        onClick={() => setQuestionForm({ ...questionForm, difficulty: level })}
+                      >
+                        {level}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 

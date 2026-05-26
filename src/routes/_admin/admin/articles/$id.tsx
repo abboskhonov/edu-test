@@ -3,15 +3,25 @@ import { useState } from "react"
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { adminUpdateArticleFn, adminDeleteArticleFn } from "@/services/admin/articles"
-import { IconArrowLeft, IconCheck, IconTrash } from "@tabler/icons-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { IconArrowLeft, IconCheck, IconTrash, IconChevronDown } from "@tabler/icons-react"
+import { AdminFormSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_admin/admin/articles/$id")({
   component: EditArticlePage,
-  loader: async ({ params }) => {
-    // We need to look up by ID - using slug approach for now
-    // Actually we need a getById function. Let me use the slug for now.
-    // For simplicity, we'll fetch all articles and find the one matching ID
-    return { articleId: params.id }
+  pendingComponent: AdminFormSkeleton,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ["admin-articles"],
+      queryFn: () => import("@/services/admin/articles").then((m) => m.adminGetArticlesFn()),
+    })
   },
 })
 
@@ -109,7 +119,7 @@ function EditArticlePage() {
 
       <form onSubmit={handleSubmit} className="mt-8 max-w-2xl space-y-5">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Title</label>
+          <Label>Title</Label>
           <input
             type="text"
             value={form.title}
@@ -120,7 +130,7 @@ function EditArticlePage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Slug</label>
+          <Label>Slug</Label>
           <input
             type="text"
             value={form.slug}
@@ -131,24 +141,24 @@ function EditArticlePage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Category</label>
-          <select
-            value={form.category}
-            onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="">Select category</option>
-            <option value="ESL/EFL">ESL/EFL</option>
-            <option value="Assessment">Assessment</option>
-            <option value="Research Writing">Research Writing</option>
-            <option value="Grammar">Grammar</option>
-            <option value="Digital Literacy">Digital Literacy</option>
-            <option value="Methodology">Methodology</option>
-          </select>
+          <Label>Category</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex h-11 w-full items-center justify-between rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <span>{form.category || "Select category"}</span>
+              <IconChevronDown size={14} className="text-muted-foreground" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-[var(--anchor-width)]">
+              {["ESL/EFL", "Assessment", "Research Writing", "Grammar", "Digital Literacy", "Methodology"].map((cat) => (
+                <DropdownMenuItem key={cat} onClick={() => setForm({ ...form, category: cat })}>
+                  {cat}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Excerpt</label>
+          <Label>Excerpt</Label>
           <textarea
             value={form.excerpt}
             onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
@@ -158,7 +168,7 @@ function EditArticlePage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Content (Markdown supported)</label>
+          <Label>Content (Markdown supported)</Label>
           <textarea
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
@@ -170,26 +180,32 @@ function EditArticlePage() {
 
         <div className="flex items-center gap-6">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Status</label>
-            <select
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value as "draft" | "published" })}
-              className="h-11 rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
+            <Label>Status</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex h-11 items-center justify-between rounded-xl border border-border bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <span className="capitalize">{form.status}</span>
+                <IconChevronDown size={14} className="text-muted-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {["draft", "published"].map((status) => (
+                  <DropdownMenuItem
+                    key={status}
+                    onClick={() => setForm({ ...form, status: status as "draft" | "published" })}
+                  >
+                    <span className="capitalize">{status}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          <label className="flex items-center gap-2 pt-6">
-            <input
-              type="checkbox"
+          <div className="flex items-center gap-2 pt-6">
+            <Checkbox
               checked={form.featured}
-              onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-              className="h-4 w-4 rounded border-border"
+              onCheckedChange={(checked) => setForm({ ...form, featured: checked === true })}
             />
-            <span className="text-sm font-medium">Featured on homepage</span>
-          </label>
+            <Label>Featured on homepage</Label>
+          </div>
         </div>
 
         <div className="pt-4">

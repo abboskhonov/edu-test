@@ -33,6 +33,9 @@ import { Route as AdminAdminResourcesIndexRouteImport } from './routes/_admin/ad
 import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
 import { Route as AdminAdminContactsIndexRouteImport } from './routes/_admin/admin/contacts/index'
 import { Route as AdminAdminArticlesIndexRouteImport } from './routes/_admin/admin/articles/index'
+import { Route as AdminAdminResourcesCreateRouteImport } from './routes/_admin/admin/resources/create'
+import { Route as AdminAdminResourcesIdRouteImport } from './routes/_admin/admin/resources/$id'
+import { Route as AdminAdminQuizzesCreateRouteImport } from './routes/_admin/admin/quizzes/create'
 import { Route as AdminAdminQuizzesIdRouteImport } from './routes/_admin/admin/quizzes/$id'
 import { Route as AdminAdminArticlesCreateRouteImport } from './routes/_admin/admin/articles/create'
 import { Route as AdminAdminArticlesIdRouteImport } from './routes/_admin/admin/articles/$id'
@@ -156,6 +159,22 @@ const AdminAdminArticlesIndexRoute = AdminAdminArticlesIndexRouteImport.update({
   path: '/admin/articles/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAdminResourcesCreateRoute =
+  AdminAdminResourcesCreateRouteImport.update({
+    id: '/admin/resources/create',
+    path: '/admin/resources/create',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
+const AdminAdminResourcesIdRoute = AdminAdminResourcesIdRouteImport.update({
+  id: '/admin/resources/$id',
+  path: '/admin/resources/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAdminQuizzesCreateRoute = AdminAdminQuizzesCreateRouteImport.update({
+  id: '/admin/quizzes/create',
+  path: '/admin/quizzes/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminAdminQuizzesIdRoute = AdminAdminQuizzesIdRouteImport.update({
   id: '/admin/quizzes/$id',
   path: '/admin/quizzes/$id',
@@ -194,6 +213,9 @@ export interface FileRoutesByFullPath {
   '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
   '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
+  '/admin/resources/$id': typeof AdminAdminResourcesIdRoute
+  '/admin/resources/create': typeof AdminAdminResourcesCreateRoute
   '/admin/articles/': typeof AdminAdminArticlesIndexRoute
   '/admin/contacts/': typeof AdminAdminContactsIndexRoute
   '/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
@@ -221,6 +243,9 @@ export interface FileRoutesByTo {
   '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
   '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
+  '/admin/resources/$id': typeof AdminAdminResourcesIdRoute
+  '/admin/resources/create': typeof AdminAdminResourcesCreateRoute
   '/admin/articles': typeof AdminAdminArticlesIndexRoute
   '/admin/contacts': typeof AdminAdminContactsIndexRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
@@ -251,6 +276,9 @@ export interface FileRoutesById {
   '/_admin/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/_admin/admin/articles/create': typeof AdminAdminArticlesCreateRoute
   '/_admin/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
+  '/_admin/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
+  '/_admin/admin/resources/$id': typeof AdminAdminResourcesIdRoute
+  '/_admin/admin/resources/create': typeof AdminAdminResourcesCreateRoute
   '/_admin/admin/articles/': typeof AdminAdminArticlesIndexRoute
   '/_admin/admin/contacts/': typeof AdminAdminContactsIndexRoute
   '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
@@ -280,6 +308,9 @@ export interface FileRouteTypes {
     | '/admin/articles/$id'
     | '/admin/articles/create'
     | '/admin/quizzes/$id'
+    | '/admin/quizzes/create'
+    | '/admin/resources/$id'
+    | '/admin/resources/create'
     | '/admin/articles/'
     | '/admin/contacts/'
     | '/admin/quizzes/'
@@ -307,6 +338,9 @@ export interface FileRouteTypes {
     | '/admin/articles/$id'
     | '/admin/articles/create'
     | '/admin/quizzes/$id'
+    | '/admin/quizzes/create'
+    | '/admin/resources/$id'
+    | '/admin/resources/create'
     | '/admin/articles'
     | '/admin/contacts'
     | '/admin/quizzes'
@@ -336,6 +370,9 @@ export interface FileRouteTypes {
     | '/_admin/admin/articles/$id'
     | '/_admin/admin/articles/create'
     | '/_admin/admin/quizzes/$id'
+    | '/_admin/admin/quizzes/create'
+    | '/_admin/admin/resources/$id'
+    | '/_admin/admin/resources/create'
     | '/_admin/admin/articles/'
     | '/_admin/admin/contacts/'
     | '/_admin/admin/quizzes/'
@@ -532,6 +569,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminArticlesIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/_admin/admin/resources/create': {
+      id: '/_admin/admin/resources/create'
+      path: '/admin/resources/create'
+      fullPath: '/admin/resources/create'
+      preLoaderRoute: typeof AdminAdminResourcesCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/resources/$id': {
+      id: '/_admin/admin/resources/$id'
+      path: '/admin/resources/$id'
+      fullPath: '/admin/resources/$id'
+      preLoaderRoute: typeof AdminAdminResourcesIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/quizzes/create': {
+      id: '/_admin/admin/quizzes/create'
+      path: '/admin/quizzes/create'
+      fullPath: '/admin/quizzes/create'
+      preLoaderRoute: typeof AdminAdminQuizzesCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_admin/admin/quizzes/$id': {
       id: '/_admin/admin/quizzes/$id'
       path: '/admin/quizzes/$id'
@@ -561,6 +619,9 @@ interface AdminRouteRouteChildren {
   AdminAdminArticlesIdRoute: typeof AdminAdminArticlesIdRoute
   AdminAdminArticlesCreateRoute: typeof AdminAdminArticlesCreateRoute
   AdminAdminQuizzesIdRoute: typeof AdminAdminQuizzesIdRoute
+  AdminAdminQuizzesCreateRoute: typeof AdminAdminQuizzesCreateRoute
+  AdminAdminResourcesIdRoute: typeof AdminAdminResourcesIdRoute
+  AdminAdminResourcesCreateRoute: typeof AdminAdminResourcesCreateRoute
   AdminAdminArticlesIndexRoute: typeof AdminAdminArticlesIndexRoute
   AdminAdminContactsIndexRoute: typeof AdminAdminContactsIndexRoute
   AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
@@ -573,6 +634,9 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAdminArticlesIdRoute: AdminAdminArticlesIdRoute,
   AdminAdminArticlesCreateRoute: AdminAdminArticlesCreateRoute,
   AdminAdminQuizzesIdRoute: AdminAdminQuizzesIdRoute,
+  AdminAdminQuizzesCreateRoute: AdminAdminQuizzesCreateRoute,
+  AdminAdminResourcesIdRoute: AdminAdminResourcesIdRoute,
+  AdminAdminResourcesCreateRoute: AdminAdminResourcesCreateRoute,
   AdminAdminArticlesIndexRoute: AdminAdminArticlesIndexRoute,
   AdminAdminContactsIndexRoute: AdminAdminContactsIndexRoute,
   AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,

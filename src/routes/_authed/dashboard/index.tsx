@@ -5,20 +5,33 @@ import { getQuizAttemptsFn } from "@/services/quizzes"
 import { getSavedArticlesFn } from "@/services/articles"
 import { useAuth } from "@/hooks/use-auth"
 import { IconBook, IconCertificate, IconDownload, IconStar, IconArrowRight, IconTrendingUp, IconTrendingDown } from "@tabler/icons-react"
+import { DashboardSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_authed/dashboard/")({
   component: DashboardPage,
+  pendingComponent: DashboardSkeleton,
   staleTime: 60 * 1000,
   loader: async ({ context }) => {
     const userId = context.session?.user?.id
-    if (!userId) return { stats: null, dashboard: null, attempts: [], saved: [] }
-    const [stats, dashboard, attempts, saved] = await Promise.all([
-      getDashboardStatsFn({ data: { userId } } as any),
-      getDashboardDataFn({ data: { userId } } as any),
-      getQuizAttemptsFn({ data: { userId } } as any),
-      getSavedArticlesFn({ data: { userId } } as any),
+    if (!userId) return
+    await Promise.all([
+      context.queryClient.ensureQueryData({
+        queryKey: ["dashboard-stats", userId],
+        queryFn: () => getDashboardStatsFn({ data: { userId } } as any),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["dashboard", userId],
+        queryFn: () => getDashboardDataFn({ data: { userId } } as any),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["quiz-attempts", userId],
+        queryFn: () => getQuizAttemptsFn({ data: { userId } } as any),
+      }),
+      context.queryClient.ensureQueryData({
+        queryKey: ["saved-articles", userId],
+        queryFn: () => getSavedArticlesFn({ data: { userId } } as any),
+      }),
     ])
-    return { stats, dashboard, attempts, saved }
   },
 })
 
