@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { IconFileText } from "@tabler/icons-react"
 
 export const Route = createFileRoute("/research/")({ component: ResearchPage })

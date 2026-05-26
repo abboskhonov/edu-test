@@ -21,7 +21,10 @@ import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResearchIndexRouteImport } from './routes/research/index'
 import { Route as QuizzesIndexRouteImport } from './routes/quizzes/index'
 import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
+import { Route as QuizzesIdRouteImport } from './routes/quizzes/$id'
+import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
 import { Route as AuthedDashboardIndexRouteImport } from './routes/_authed/dashboard/index'
+import { Route as QuizzesIdResultsRouteImport } from './routes/quizzes/$id.results'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const TermsRoute = TermsRouteImport.update({
@@ -83,10 +86,25 @@ const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
   path: '/articles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizzesIdRoute = QuizzesIdRouteImport.update({
+  id: '/quizzes/$id',
+  path: '/quizzes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthedDashboardIndexRoute = AuthedDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
   getParentRoute: () => AuthedRouteRoute,
+} as any)
+const QuizzesIdResultsRoute = QuizzesIdResultsRouteImport.update({
+  id: '/results',
+  path: '/results',
+  getParentRoute: () => QuizzesIdRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -102,11 +120,14 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles/': typeof ArticlesIndexRoute
   '/quizzes/': typeof QuizzesIndexRoute
   '/research/': typeof ResearchIndexRoute
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/quizzes/$id/results': typeof QuizzesIdResultsRoute
   '/dashboard/': typeof AuthedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -117,11 +138,14 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles': typeof ArticlesIndexRoute
   '/quizzes': typeof QuizzesIndexRoute
   '/research': typeof ResearchIndexRoute
   '/resources': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/quizzes/$id/results': typeof QuizzesIdResultsRoute
   '/dashboard': typeof AuthedDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -134,11 +158,14 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles/': typeof ArticlesIndexRoute
   '/quizzes/': typeof QuizzesIndexRoute
   '/research/': typeof ResearchIndexRoute
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/quizzes/$id/results': typeof QuizzesIdResultsRoute
   '/_authed/dashboard/': typeof AuthedDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -151,11 +178,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/terms'
+    | '/articles/$slug'
+    | '/quizzes/$id'
     | '/articles/'
     | '/quizzes/'
     | '/research/'
     | '/resources/'
     | '/api/auth/$'
+    | '/quizzes/$id/results'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,11 +196,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/terms'
+    | '/articles/$slug'
+    | '/quizzes/$id'
     | '/articles'
     | '/quizzes'
     | '/research'
     | '/resources'
     | '/api/auth/$'
+    | '/quizzes/$id/results'
     | '/dashboard'
   id:
     | '__root__'
@@ -182,11 +215,14 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/terms'
+    | '/articles/$slug'
+    | '/quizzes/$id'
     | '/articles/'
     | '/quizzes/'
     | '/research/'
     | '/resources/'
     | '/api/auth/$'
+    | '/quizzes/$id/results'
     | '/_authed/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -199,6 +235,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   TermsRoute: typeof TermsRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
+  QuizzesIdRoute: typeof QuizzesIdRouteWithChildren
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   QuizzesIndexRoute: typeof QuizzesIndexRoute
   ResearchIndexRoute: typeof ResearchIndexRoute
@@ -292,12 +330,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quizzes/$id': {
+      id: '/quizzes/$id'
+      path: '/quizzes/$id'
+      fullPath: '/quizzes/$id'
+      preLoaderRoute: typeof QuizzesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed/dashboard/': {
       id: '/_authed/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthedDashboardIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
+    }
+    '/quizzes/$id/results': {
+      id: '/quizzes/$id/results'
+      path: '/results'
+      fullPath: '/quizzes/$id/results'
+      preLoaderRoute: typeof QuizzesIdResultsRouteImport
+      parentRoute: typeof QuizzesIdRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -321,6 +380,18 @@ const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
   AuthedRouteRouteChildren,
 )
 
+interface QuizzesIdRouteChildren {
+  QuizzesIdResultsRoute: typeof QuizzesIdResultsRoute
+}
+
+const QuizzesIdRouteChildren: QuizzesIdRouteChildren = {
+  QuizzesIdResultsRoute: QuizzesIdResultsRoute,
+}
+
+const QuizzesIdRouteWithChildren = QuizzesIdRoute._addFileChildren(
+  QuizzesIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthedRouteRoute: AuthedRouteRouteWithChildren,
@@ -330,6 +401,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   TermsRoute: TermsRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
+  QuizzesIdRoute: QuizzesIdRouteWithChildren,
   ArticlesIndexRoute: ArticlesIndexRoute,
   QuizzesIndexRoute: QuizzesIndexRoute,
   ResearchIndexRoute: ResearchIndexRoute,

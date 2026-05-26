@@ -12,7 +12,7 @@ export const getSessionFn = createServerFn({ method: "GET" }).handler(
 
 export const signUpFn = createServerFn({ method: "POST" })
   .handler(async (ctx) => {
-    const { email, password, name } = ctx.data as { email: string; password: string; name: string }
+    const { email, password, name } = ctx.data as unknown as { email: string; password: string; name: string }
     const headers = getRequestHeaders()
     const result = await auth.api.signUpEmail({
       body: { email, password, name },
@@ -23,7 +23,7 @@ export const signUpFn = createServerFn({ method: "POST" })
 
 export const signInFn = createServerFn({ method: "POST" })
   .handler(async (ctx) => {
-    const { email, password } = ctx.data as { email: string; password: string }
+    const { email, password } = ctx.data as unknown as { email: string; password: string }
     const headers = getRequestHeaders()
     const result = await auth.api.signInEmail({
       body: { email, password },

@@ -1,25 +1,44 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { getFeaturedArticlesFn } from "@/services/articles"
+import { getQuizzesFn } from "@/services/quizzes"
 import { Hero } from "@/features/marketing/hero"
-import { Button } from "@/components/ui/button"
 import {
   IconArrowRight,
   IconBook,
   IconCertificate,
-  IconUsers,
-  IconSparkles,
   IconFileText,
   IconLibrary,
   IconChartBar,
 } from "@tabler/icons-react"
 
-export const Route = createFileRoute("/")({ component: HomePage })
+export const Route = createFileRoute("/")({
+  component: HomePage,
+  loader: async () => {
+    const [articles, quizzes] = await Promise.all([
+      getFeaturedArticlesFn(),
+      getQuizzesFn(),
+    ])
+    return { articles, quizzes }
+  },
+})
 
 function HomePage() {
+  const { data: featuredArticles } = useSuspenseQuery({
+    queryKey: ["featured-articles"],
+    queryFn: getFeaturedArticlesFn,
+  })
+
+  const { data: quizzes } = useSuspenseQuery({
+    queryKey: ["quizzes"],
+    queryFn: getQuizzesFn,
+  })
+
   return (
     <div>
       <Hero />
 
-      {/* Feature sections — folk style: big headline + minimal text */}
+      {/* Feature sections */}
       <section className="px-4 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
@@ -28,7 +47,7 @@ function HomePage() {
             shape their teaching
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            real ways educators are already using our platform to refine, 
+            real ways educators are already using our platform to refine,
             assess, and elevate their writing instruction.
           </p>
         </div>
@@ -65,10 +84,11 @@ function HomePage() {
           </div>
 
           <div className="space-y-6">
-            {featuredArticles.map((article) => (
+            {featuredArticles?.map((article) => (
               <Link
                 key={article.slug}
-                to={`/articles/${article.slug}`}
+                to="/articles/$slug"
+                params={{ slug: article.slug }}
                 className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-6 transition-all hover:border-border hover:shadow-[0_2px_16px_rgba(0,0,0,0.04)] sm:flex-row sm:items-start sm:gap-6 sm:p-8"
               >
                 <div className="shrink-0">
@@ -83,8 +103,8 @@ function HomePage() {
                   </h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
                 </div>
-                <div className="shrink-0 self-start pt-1 text-xs text-muted-foreground">
-                  {article.readTime}
+                <div className="flex shrink-0 items-center gap-1 self-start pt-1 text-xs text-muted-foreground">
+                  Read <IconArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
             ))}
@@ -92,7 +112,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Quiz CTA — big headline style */}
+      {/* Quiz CTA */}
       <section className="px-4 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary">
@@ -104,7 +124,7 @@ function HomePage() {
             you keep growing
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-            take professional assessments across six domains. get instant feedback, 
+            take professional assessments across six domains. get instant feedback,
             progress tracking, and personalized recommendations based on your results.
           </p>
           <div className="mt-8">
@@ -120,17 +140,17 @@ function HomePage() {
 
         {/* Quiz categories */}
         <div className="mx-auto mt-16 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {quizCategories.map((cat) => (
+          {quizzes?.filter(q => !q.isDiagnostic).map((q) => (
             <div
-              key={cat.title}
+              key={q.id}
               className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-border hover:shadow-[0_2px_16px_rgba(0,0,0,0.04)]"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/5 text-primary">
-                <cat.icon size={18} stroke={1.5} />
+                <IconBook size={18} stroke={1.5} />
               </div>
               <div>
-                <h4 className="text-sm font-medium text-foreground">{cat.title}</h4>
-                <p className="mt-0.5 text-xs text-muted-foreground">{cat.count} questions</p>
+                <h4 className="text-sm font-medium text-foreground">{q.title}</h4>
+                <p className="mt-0.5 text-xs text-muted-foreground">{q.totalQuestions} questions &middot; {q.timeLimitMinutes} min</p>
               </div>
             </div>
           ))}
@@ -145,7 +165,7 @@ function HomePage() {
               always open, all yours
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-muted-foreground">
-              lesson plans, rubrics, worksheets, and classroom tools — 
+              lesson plans, rubrics, worksheets, and classroom tools —
               everything you need, ready to download.
             </p>
           </div>
@@ -167,7 +187,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials — clean minimal */}
+      {/* Testimonials */}
       <section className="px-4 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
@@ -204,7 +224,7 @@ function HomePage() {
             your teaching?
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-            join the Teacher Writing Academy today and access everything 
+            join the Teacher Writing Academy today and access everything
             you need to become a more effective writing educator.
           </p>
           <div className="mt-10">
@@ -238,39 +258,6 @@ const useCases = [
     description: "Download lesson plans, rubrics, and tools designed by educators, for educators.",
     icon: IconLibrary,
   },
-]
-
-const featuredArticles = [
-  {
-    title: "Process Writing in the EFL Classroom",
-    excerpt: "A comprehensive guide to implementing process-oriented writing instruction for English language learners, from brainstorming to final revision.",
-    category: "ESL/EFL",
-    readTime: "8 min read",
-    slug: "process-writing-efl",
-  },
-  {
-    title: "Designing Effective Writing Rubrics",
-    excerpt: "How to build holistic and analytic rubrics that improve student feedback quality, reduce grading bias, and build metacognitive awareness.",
-    category: "Assessment",
-    readTime: "6 min read",
-    slug: "effective-writing-rubrics",
-  },
-  {
-    title: "Scaffolding Academic Writing Skills",
-    excerpt: "Graduated support techniques to help students develop complex academic writing competencies over time, not overnight.",
-    category: "Research Writing",
-    readTime: "10 min read",
-    slug: "scaffolding-academic-writing",
-  },
-]
-
-const quizCategories = [
-  { title: "Writing Instruction", count: 15, icon: IconBook },
-  { title: "Grammar Teaching", count: 20, icon: IconSparkles },
-  { title: "ESL/EFL Pedagogy", count: 15, icon: IconUsers },
-  { title: "Research & Academic", count: 25, icon: IconFileText },
-  { title: "Digital Tools", count: 12, icon: IconSparkles },
-  { title: "Assessment & Rubrics", count: 18, icon: IconCertificate },
 ]
 
 const resourceCategories = [

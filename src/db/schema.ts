@@ -117,7 +117,37 @@ export const resources = pgTable("resources", {
   description: text("description"),
   fileUrl: text("file_url"),
   category: text("category"),
+  fileType: text("file_type"),
   downloadCount: integer("download_count").notNull().default(0),
   uploadedBy: text("uploaded_by").references(() => user.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const savedArticles = pgTable("saved_articles", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  articleId: text("article_id").notNull().references(() => articles.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const resourceDownloads = pgTable("resource_downloads", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  resourceId: text("resource_id").notNull().references(() => resources.id),
+  downloadedAt: timestamp("downloaded_at").notNull().defaultNow(),
+})
+
+export const contacts = pgTable("contacts", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  subject: text("subject"),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const newsletters = pgTable("newsletters", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  subscribedAt: timestamp("subscribed_at").notNull().defaultNow(),
 })

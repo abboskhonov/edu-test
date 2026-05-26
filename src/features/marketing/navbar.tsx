@@ -5,7 +5,6 @@ import {
   IconX,
   IconBook,
 } from "@tabler/icons-react"
-import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/use-auth"
 
 const navLinks = [
@@ -61,7 +60,7 @@ export function Navbar() {
                   {user.name || user.email}
                 </Link>
                 <button
-                  onClick={() => signOut.mutate()}
+                  onClick={() => signOut.mutate({} as any)}
                   className="h-8 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.96] transition-transform"
                 >
                   Log out
@@ -75,13 +74,12 @@ export function Navbar() {
                 >
                   Log in
                 </Link>
-                <Button
-                  size="sm"
-                  className="h-8 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.96] transition-transform"
-                  asChild
+                <Link
+                  to="/register"
+                  className="inline-flex h-8 items-center rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.96] transition-transform"
                 >
-                  <Link to="/register">Join</Link>
-                </Button>
+                  Join
+                </Link>
               </>
             )}
           </div>
@@ -128,7 +126,7 @@ export function Navbar() {
                   </Link>
                   <button
                     onClick={() => {
-                      signOut.mutate()
+                      signOut.mutate({} as any)
                       setMobileOpen(false)
                     }}
                     className="rounded-xl px-4 py-3 text-sm font-medium text-destructive transition-colors hover:bg-muted"
@@ -145,11 +143,13 @@ export function Navbar() {
                   >
                     Log in
                   </Link>
-                  <Button className="w-full rounded-xl" asChild>
-                    <Link to="/register" onClick={() => setMobileOpen(false)}>
-                      Join Academy
-                    </Link>
-                  </Button>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                  >
+                    Join Academy
+                  </Link>
                 </>
               )}
             </div>
