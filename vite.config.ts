@@ -8,6 +8,13 @@ import tailwindcss from "@tailwindcss/vite"
 import { nitro } from "nitro/vite"
 
 const config = defineConfig({
+  optimizeDeps: {
+    include: [
+      "use-sync-external-store",
+      "use-sync-external-store/shim",
+      "use-sync-external-store/shim/with-selector",
+    ],
+  },
   plugins: [
     devtools(),
     nitro(),
