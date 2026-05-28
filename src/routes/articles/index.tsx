@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getArticlesFn } from "@/services/articles"
 import { IconBook, IconArrowRight } from "@tabler/icons-react"
 import { PublicListSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/articles/")({
   component: ArticlesPage,
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/articles/")({
 })
 
 function ArticlesPage() {
+  const { t } = useI18n()
   const { data: articles } = useSuspenseQuery({
     queryKey: ["articles"],
     queryFn: getArticlesFn,
@@ -25,12 +27,12 @@ function ArticlesPage() {
   return (
     <div className="px-4 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-sm font-medium text-muted-foreground">the journal</p>
+        <p className="text-sm font-medium text-muted-foreground">{t("articles.theJournal")}</p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Articles & News
+          {t("articles.articlesAndNews")}
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-          Research-based writing pedagogy, teaching guides, and educational insights.
+          {t("articles.articlesDesc")}
         </p>
       </div>
 
@@ -55,7 +57,7 @@ function ArticlesPage() {
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
             </div>
             <div className="flex shrink-0 items-center gap-1 self-start pt-1 text-xs text-muted-foreground">
-              Read <IconArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+              {t("articles.read")} <IconArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
             </div>
           </Link>
         ))}

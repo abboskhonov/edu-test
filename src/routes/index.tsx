@@ -15,6 +15,7 @@ import {
   IconClock,
 } from "@tabler/icons-react"
 import { HomeSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -51,6 +52,7 @@ function ScrollReveal({ children, className = "", delay = 0, scale = false }: {
 }
 
 function HomePage() {
+  const { t } = useI18n()
   const { data: featuredArticles } = useSuspenseQuery({
     queryKey: ["featured-articles"],
     queryFn: getFeaturedArticlesFn,
@@ -71,16 +73,16 @@ function HomePage() {
           <ScrollReveal className="mb-20 md:mb-28">
             <div className="max-w-xl">
               <span className="mb-5 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                Why TWA
+                {t("home.whyTwa")}
               </span>
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-                Built for educators who take teaching seriously
+                {t("home.builtForEducators")}
               </h2>
             </div>
           </ScrollReveal>
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {useCases.map((u, i) => (
+            {getUseCases(t).map((u, i) => (
               <ScrollReveal
                 key={u.title}
                 delay={i * 0.12}
@@ -114,13 +116,13 @@ function HomePage() {
             <ScrollReveal>
               <div className="max-w-lg">
                 <span className="mb-4 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  The Journal
+                  {t("home.journal")}
                 </span>
                 <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-                  Featured articles
+                  {t("home.featuredArticles")}
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                  Research-backed writing pedagogy, translated into practical classroom guidance.
+                  {t("home.featuredArticlesDesc")}
                 </p>
               </div>
             </ScrollReveal>
@@ -129,7 +131,7 @@ function HomePage() {
                 to="/articles"
                 className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background shadow-[0_4px_24px_rgba(0,0,0,0.12)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] active:scale-[0.98]"
               >
-                <span>View all articles</span>
+                <span>{t("home.viewAllArticles")}</span>
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background/15 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-background/25">
                   <IconArrowRight size={12} stroke={1.5} className="text-background" />
                 </span>
@@ -156,7 +158,7 @@ function HomePage() {
                       {article.excerpt}
                     </p>
                     <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground transition-all group-hover:text-foreground">
-                      Read
+                      {t("home.read")}
                       <IconArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </div>
@@ -175,23 +177,22 @@ function HomePage() {
             <ScrollReveal>
               <div className="lg:sticky lg:top-32">
                 <span className="mb-5 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  Assessments
+                  {t("home.assessments")}
                 </span>
                 <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-                  Test once.
+                  {t("home.testOnce")}
                   <br />
-                  Keep growing.
+                  {t("home.keepGrowing")}
                 </h2>
                 <p className="mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-                  Professional assessments across six writing pedagogy domains. Instant feedback,
-                  progress tracking, and a clear learning path forward.
+                  {t("home.assessmentsDesc")}
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <Link
                     to="/quizzes"
                     className="group inline-flex items-center gap-3 rounded-full bg-foreground px-7 py-3.5 text-sm font-medium text-background shadow-[0_4px_24px_rgba(0,0,0,0.12)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] active:scale-[0.98]"
                   >
-                    <span>Take an Assessment</span>
+                    <span>{t("home.takeAssessment")}</span>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background/15 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-background/25">
                       <IconArrowRight size={12} stroke={1.5} className="text-background" />
                     </span>
@@ -200,7 +201,7 @@ function HomePage() {
                     to="/quizzes"
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                   >
-                    Browse all
+                    {t("home.browseAll")}
                     <IconArrowUpRight size={14} stroke={1.5} />
                   </Link>
                 </div>
@@ -220,10 +221,10 @@ function HomePage() {
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full bg-primary/[0.06] px-2.5 py-0.5 text-[11px] font-medium text-primary">
                           <IconClock size={11} stroke={1.5} />
-                          {q.timeLimitMinutes} min
+                          {q.timeLimitMinutes} {t("home.min")}
                         </span>
                         <span className="text-[11px] text-muted-foreground">
-                          {q.totalQuestions} questions
+                          {q.totalQuestions} {t("home.questions")}
                         </span>
                       </div>
                       <h4 className="text-[15px] font-medium text-foreground">{q.title}</h4>
@@ -231,7 +232,7 @@ function HomePage() {
                         {q.description}
                       </p>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-foreground">
-                        Start assessment
+                        {t("home.startAssessment")}
                         <IconArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </div>
@@ -249,19 +250,19 @@ function HomePage() {
           <ScrollReveal className="mb-16 md:mb-20">
             <div className="max-w-xl">
               <span className="mb-4 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                Resource Library
+                {t("home.resourceLibrary")}
               </span>
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-                Always open, all yours
+                {t("home.alwaysOpen")}
               </h2>
               <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-                Lesson plans, rubrics, worksheets, and classroom tools — ready to download and use.
+                {t("home.resourceLibraryDesc")}
               </p>
             </div>
           </ScrollReveal>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {resourceCategories.map((cat, i) => (
+            {getResourceCategories(t).map((cat, i) => (
               <ScrollReveal key={cat.label} delay={i * 0.1} scale>
                 <Link
                   to="/resources"
@@ -273,7 +274,7 @@ function HomePage() {
                     </div>
                     <h3 className="text-[15px] font-medium text-foreground">{cat.label}</h3>
                     <p className="mt-auto text-[13px] text-muted-foreground">
-                      {cat.count} files
+                      {cat.count} {t("home.files")}
                     </p>
                   </div>
                 </Link>
@@ -289,18 +290,18 @@ function HomePage() {
           <ScrollReveal className="mb-16 md:mb-20">
             <div className="max-w-xl">
               <span className="mb-4 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                Testimonials
+                {t("home.testimonials")}
               </span>
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-                Educators who trust TWA
+                {t("home.educatorsTrust")}
               </h2>
             </div>
           </ScrollReveal>
 
           <div className="grid gap-6 sm:grid-cols-3">
-            {testimonials.map((t, i) => (
+            {getTestimonials(t).map((item, i) => (
               <ScrollReveal
-                key={t.name}
+                key={item.name}
                 delay={i * 0.15}
                 scale
                 className={`${i === 1 ? "sm:translate-y-6" : ""}`}
@@ -308,15 +309,15 @@ function HomePage() {
                 <div className="h-full rounded-[1.5rem] bg-black/[0.03] p-1.5 ring-1 ring-black/[0.05]">
                   <div className="flex h-full flex-col gap-6 rounded-[calc(1.5rem-0.375rem)] bg-card p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] md:p-8">
                     <p className="text-[15px] leading-[1.7] text-foreground">
-                      &ldquo;{t.quote}&rdquo;
+                      &ldquo;{item.quote}&rdquo;
                     </p>
                     <div className="mt-auto flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-[11px] font-semibold text-background">
-                        {t.initials}
+                        {item.initials}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">{t.name}</p>
-                        <p className="text-[12px] text-muted-foreground">{t.role}</p>
+                        <p className="text-sm font-medium text-foreground">{item.name}</p>
+                        <p className="text-[12px] text-muted-foreground">{item.role}</p>
                       </div>
                     </div>
                   </div>
@@ -332,13 +333,13 @@ function HomePage() {
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-              Ready to advance
-              <br className="hidden sm:block" /> your teaching?
+              {t("home.readyToAdvance")}
+              <br className="hidden sm:block" /> {t("home.yourTeaching")}
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.15}>
             <p className="mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
-              Join the Teacher Writing Academy today and access everything you need to become a more effective writing educator.
+              {t("home.finalCtaDesc")}
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.3} className="mt-10">
@@ -347,7 +348,7 @@ function HomePage() {
                 to="/register"
                 className="group inline-flex items-center gap-3 rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background shadow-[0_4px_24px_rgba(0,0,0,0.12)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] active:scale-[0.98]"
               >
-                <span>Join the Academy</span>
+                <span>{t("home.joinAcademy")}</span>
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-background/25">
                   <IconArrowRight size={14} stroke={1.5} className="text-background" />
                 </span>
@@ -356,7 +357,7 @@ function HomePage() {
                 to="/articles"
                 className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-8 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-muted active:scale-[0.98]"
               >
-                Explore Articles
+                {t("home.exploreArticles")}
               </Link>
             </div>
           </ScrollReveal>
@@ -366,48 +367,54 @@ function HomePage() {
   )
 }
 
-const useCases = [
-  {
-    title: "Assess & Reflect",
-    description: "Take diagnostic quizzes to identify your strengths and growth areas in writing pedagogy. Get a personalized report with clear next steps.",
-    icon: IconChartBar,
-  },
-  {
-    title: "Read & Apply",
-    description: "Access research-backed articles and translate insights directly into classroom practice.",
-    icon: IconFileText,
-  },
-  {
-    title: "Build & Share",
-    description: "Download lesson plans, rubrics, and tools designed by educators, for educators.",
-    icon: IconLibrary,
-  },
-]
+function getUseCases(t: (key: string) => string) {
+  return [
+    {
+      title: t("home.useCases.assessReflect.title"),
+      description: t("home.useCases.assessReflect.description"),
+      icon: IconChartBar,
+    },
+    {
+      title: t("home.useCases.readApply.title"),
+      description: t("home.useCases.readApply.description"),
+      icon: IconFileText,
+    },
+    {
+      title: t("home.useCases.buildShare.title"),
+      description: t("home.useCases.buildShare.description"),
+      icon: IconLibrary,
+    },
+  ]
+}
 
-const resourceCategories = [
-  { label: "Lesson Plans", icon: IconBook, count: 42 },
-  { label: "Rubrics", icon: IconCertificate, count: 28 },
-  { label: "Worksheets", icon: IconLibrary, count: 56 },
-  { label: "Writing Prompts", icon: IconFileText, count: 34 },
-]
+function getResourceCategories(t: (key: string) => string) {
+  return [
+    { label: t("home.lessonPlans"), icon: IconBook, count: 42 },
+    { label: t("home.rubrics"), icon: IconCertificate, count: 28 },
+    { label: t("home.worksheets"), icon: IconLibrary, count: 56 },
+    { label: t("home.writingPrompts"), icon: IconFileText, count: 34 },
+  ]
+}
 
-const testimonials = [
-  {
-    quote: "The diagnostic quiz revealed gaps in my grammar teaching methods I hadn't even considered. The recommended articles were spot-on.",
-    name: "Dr. Sarah Mitchell",
-    role: "Senior Lecturer, University of Melbourne",
-    initials: "SM",
-  },
-  {
-    quote: "A well-designed resource hub. The lesson plans are practical and research-backed. I've shared this with my entire department.",
-    name: "Prof. James Okafor",
-    role: "Head of English, Lagos Academy",
-    initials: "JO",
-  },
-  {
-    quote: "Finally, a platform that treats writing pedagogy with the depth it deserves. The assessment gave me a clear learning path forward.",
-    name: "Aisha Rahman",
-    role: "EFL Coordinator, Dubai International",
-    initials: "AR",
-  },
-]
+function getTestimonials(_t: (key: string) => string) {
+  return [
+    {
+      quote: "The diagnostic quiz revealed gaps in my grammar teaching methods I hadn't even considered. The recommended articles were spot-on.",
+      name: "Dr. Sarah Mitchell",
+      role: "Senior Lecturer, University of Melbourne",
+      initials: "SM",
+    },
+    {
+      quote: "A well-designed resource hub. The lesson plans are practical and research-backed. I've shared this with my entire department.",
+      name: "Prof. James Okafor",
+      role: "Head of English, Lagos Academy",
+      initials: "JO",
+    },
+    {
+      quote: "Finally, a platform that treats writing pedagogy with the depth it deserves. The assessment gave me a clear learning path forward.",
+      name: "Aisha Rahman",
+      role: "EFL Coordinator, Dubai International",
+      initials: "AR",
+    },
+  ]
+}

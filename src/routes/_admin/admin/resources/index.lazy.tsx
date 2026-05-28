@@ -2,6 +2,7 @@ import { createLazyFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminGetResourcesFn, adminDeleteResourceFn } from "@/services/admin/resources"
 import { IconPlus } from "@tabler/icons-react"
+import { useI18n } from "@/lib/i18n"
 import { AdminPageHeader, AdminDataTable, AdminActions } from "@/features/admin"
 
 export const Route = createLazyFileRoute("/_admin/admin/resources/")({
@@ -9,6 +10,7 @@ export const Route = createLazyFileRoute("/_admin/admin/resources/")({
 })
 
 function AdminResourcesPage() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const { data: resources } = useSuspenseQuery({
     queryKey: ["admin-resources"],
@@ -25,8 +27,8 @@ function AdminResourcesPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Resources"
-        subtitle="Manage downloadable files and materials."
+        title={t("admin.resources")}
+        subtitle={t("admin.manageResources")}
         backTo="/admin"
       />
 
@@ -35,11 +37,11 @@ function AdminResourcesPage() {
           to="/admin/resources/create"
           className="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96]"
         >
-          <IconPlus size={14} /> Add Resource
+          <IconPlus size={14} /> {t("admin.newResource")}
         </Link>
       </div>
 
-      <AdminDataTable headers={["Title", "Category", "Type", "Downloads", "Date", "Actions"]}>
+      <AdminDataTable headers={[t("admin.title"), t("admin.category"), t("admin.type"), t("admin.downloads"), t("admin.date"), t("admin.actions")]}>
         {resources?.map((r) => (
           <tr key={r.id} className="transition-colors hover:bg-muted/30">
             <td className="px-5 py-4 font-medium text-foreground">{r.title}</td>
@@ -56,7 +58,7 @@ function AdminResourcesPage() {
                 editTo="/admin/resources/$id"
                 editParams={{ id: r.id }}
                 onDelete={() => deleteMutation.mutate({ data: { id: r.id } } as any)}
-                deleteConfirmMessage="Delete this resource?"
+                deleteConfirmMessage={t("admin.deleteResource")}
                 isPending={deleteMutation.isPending}
               />
             </td>

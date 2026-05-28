@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router"
+import { useI18n } from "@/lib/i18n"
 
 export function Hero() {
+  const { t } = useI18n()
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-4 py-32 md:py-40">
       {/* Subtle vertical line texture */}
@@ -23,11 +25,11 @@ export function Hero() {
             className="group inline-flex items-center gap-3 rounded-full border border-border/80 bg-card/80 px-4 py-2 text-sm shadow-sm backdrop-blur-sm transition-all hover:shadow-md"
           >
             <span className="rounded-full bg-foreground px-2.5 py-0.5 text-[10px] font-semibold text-background">
-              New
+              {t("hero.new")}
             </span>
-            <span className="font-medium text-foreground">Writing Assessment Tools now live</span>
+            <span className="font-medium text-foreground">{t("hero.badge")}</span>
             <span className="text-muted-foreground transition-colors group-hover:text-foreground">
-              Try now ›
+              {t("hero.tryNow")}
             </span>
           </Link>
         </div>
@@ -35,10 +37,10 @@ export function Hero() {
         {/* Headline */}
         <h1
           className="animate-hero-reveal text-[clamp(2.5rem,5.5vw,4.5rem)] font-bold leading-[1.1] tracking-tight text-foreground"
-          style={{ animationDelay: "0.3s" }}
+          style={{ animationDelay: "0.3s", fontFamily: "var(--font-serif)" }}
         >
-          Research-based tools for
-          <br className="hidden sm:block" /> writing educators
+          {t("hero.headline")}
+          <br className="hidden sm:block" /> {t("hero.headlineBreak")}
         </h1>
 
         {/* Subheadline */}
@@ -46,8 +48,7 @@ export function Hero() {
           className="animate-hero-reveal mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
           style={{ animationDelay: "0.5s" }}
         >
-          Articles, assessments, and classroom resources designed to help you teach
-          writing more effectively.
+          {t("hero.subheadline")}
         </p>
 
         {/* Two CTAs side by side */}
@@ -59,13 +60,13 @@ export function Hero() {
             to="/register"
             className="inline-flex h-12 items-center justify-center rounded-full bg-foreground px-8 text-sm font-medium text-background shadow-lg transition-all hover:bg-foreground/90 active:scale-[0.98]"
           >
-            Join the Academy
+            {t("hero.ctaJoin")}
           </Link>
           <Link
             to="/articles"
             className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-8 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-muted active:scale-[0.98]"
           >
-            Explore Articles
+            {t("hero.ctaExplore")}
           </Link>
         </div>
 
@@ -76,7 +77,7 @@ export function Hero() {
         >
           <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
           <span className="font-semibold tabular-nums text-foreground">2,847</span>
-          <span>educators enrolled this month</span>
+          <span>{t("hero.educatorsCount")}</span>
         </div>
       </div>
     </section>

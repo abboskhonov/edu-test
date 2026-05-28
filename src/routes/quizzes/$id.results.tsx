@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getQuizAttemptByIdFn } from "@/services/quizzes"
 import { IconArrowLeft, IconTrophy, IconCheck, IconX, IconBook, IconArrowRight, IconRotateClockwise } from "@tabler/icons-react"
 import { QuizResultsSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/quizzes/$id/results")({
   component: QuizResultsPage,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/quizzes/$id/results")({
 })
 
 function QuizResultsPage() {
+  const { t } = useI18n()
   const { id } = Route.useParams()
   const search = Route.useSearch() as { attemptId?: string }
 
@@ -23,9 +25,9 @@ function QuizResultsPage() {
   if (!attempt) {
     return (
       <div className="px-4 py-24 text-center">
-        <h1 className="text-2xl font-semibold">No results found</h1>
+        <h1 className="text-2xl font-semibold">{t("quizzes.noResultsFound")}</h1>
         <Link to="/quizzes/$id" params={{ id }} className="mt-4 inline-flex items-center gap-1 text-primary hover:underline">
-          <IconArrowLeft size={16} /> Take the quiz
+          <IconArrowLeft size={16} /> {t("quizzes.takeTheQuiz")}
         </Link>
       </div>
     )
@@ -34,10 +36,10 @@ function QuizResultsPage() {
   const { score, maxScore, percentage, certificateTier, answers } = attempt
 
   const tierConfig: Record<string, { label: string; color: string; icon: typeof IconTrophy; message: string }> = {
-    Expert: { label: "Expert", color: "text-amber-600 bg-amber-500/10 border-amber-200", icon: IconTrophy, message: "Outstanding! You demonstrate deep mastery of this domain." },
-    Proficient: { label: "Proficient", color: "text-emerald-600 bg-emerald-500/10 border-emerald-200", icon: IconCheck, message: "Strong performance. You have solid knowledge with room for refinement." },
-    Developing: { label: "Developing", color: "text-blue-600 bg-blue-500/10 border-blue-200", icon: IconBook, message: "Good effort. Review the recommended articles below to strengthen your understanding." },
-    Beginner: { label: "Beginner", color: "text-rose-600 bg-rose-500/10 border-rose-200", icon: IconBook, message: "Everyone starts somewhere. Explore the learning resources to build your foundation." },
+    Expert: { label: t("quizzes.expert"), color: "text-amber-600 bg-amber-500/10 border-amber-200", icon: IconTrophy, message: t("quizzes.expertMessage") },
+    Proficient: { label: t("quizzes.proficient"), color: "text-emerald-600 bg-emerald-500/10 border-emerald-200", icon: IconCheck, message: t("quizzes.proficientMessage") },
+    Developing: { label: t("quizzes.developing"), color: "text-blue-600 bg-blue-500/10 border-blue-200", icon: IconBook, message: t("quizzes.developingMessage") },
+    Beginner: { label: t("quizzes.beginner"), color: "text-rose-600 bg-rose-500/10 border-rose-200", icon: IconBook, message: t("quizzes.beginnerMessage") },
   }
 
   const tier = tierConfig[certificateTier || "Beginner"] || tierConfig.Beginner
@@ -50,7 +52,7 @@ function QuizResultsPage() {
           to="/quizzes"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          <IconArrowLeft size={16} /> All quizzes
+          <IconArrowLeft size={16} /> {t("quizzes.allQuizzes")}
         </Link>
 
         {/* Score Card */}
@@ -61,7 +63,7 @@ function QuizResultsPage() {
           <h2 className="mt-4 text-3xl font-bold">{percentage}%</h2>
           <p className="mt-1 text-sm font-medium uppercase tracking-wider">{tier.label}</p>
           <p className="mt-2 text-sm opacity-80">{tier.message}</p>
-          <p className="mt-4 text-lg font-semibold">{score} / {maxScore} correct</p>
+          <p className="mt-4 text-lg font-semibold">{score} / {maxScore} {t("quizzes.correct")}</p>
         </div>
 
         {/* Actions */}
@@ -71,19 +73,19 @@ function QuizResultsPage() {
             params={{ id }}
             className="inline-flex h-10 items-center gap-1.5 rounded-full border border-border px-5 text-sm font-medium text-foreground transition-all hover:bg-muted active:scale-[0.96]"
           >
-            <IconRotateClockwise size={16} /> Retake Quiz
+            <IconRotateClockwise size={16} /> {t("quizzes.retakeQuiz")}
           </Link>
           <Link
             to="/articles"
             className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96]"
           >
-            Read Articles <IconArrowRight size={16} />
+            {t("quizzes.readArticles")} <IconArrowRight size={16} />
           </Link>
         </div>
 
         {/* Question Review */}
         <div className="mt-12">
-          <h3 className="text-lg font-semibold text-foreground">Question Review</h3>
+          <h3 className="text-lg font-semibold text-foreground">{t("quizzes.questionReview")}</h3>
           <div className="mt-4 space-y-4">
             {answers?.map((a: any, i: number) => (
               <div
@@ -99,20 +101,20 @@ function QuizResultsPage() {
                     {a.isCorrect ? <IconCheck size={14} /> : <IconX size={14} />}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">Question {i + 1}</p>
+                    <p className="text-sm font-medium text-foreground">{t("quizzes.question")} {i + 1}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Your answer: <span className={a.isCorrect ? "text-emerald-700 font-medium" : "text-rose-700 font-medium"}>
-                        {a.selectedAnswer >= 0 ? String.fromCharCode(65 + a.selectedAnswer) : "No answer"}
+                      {t("quizzes.yourAnswer")} <span className={a.isCorrect ? "text-emerald-700 font-medium" : "text-rose-700 font-medium"}>
+                        {a.selectedAnswer >= 0 ? String.fromCharCode(65 + a.selectedAnswer) : t("quizzes.noAnswer")}
                       </span>
                       {!a.isCorrect && (
                         <span className="ml-3 text-emerald-700">
-                          Correct: {String.fromCharCode(65 + a.correctAnswer)}
+                          {t("quizzes.correctAnswer")} {String.fromCharCode(65 + a.correctAnswer)}
                         </span>
                       )}
                     </p>
                     {a.explanation && (
                       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        <span className="font-medium text-foreground">Explanation:</span> {a.explanation}
+                        <span className="font-medium text-foreground">{t("quizzes.explanation")}</span> {a.explanation}
                       </p>
                     )}
                   </div>

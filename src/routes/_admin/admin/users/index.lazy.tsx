@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 import { IconChevronDown } from "@tabler/icons-react"
+import { useI18n } from "@/lib/i18n"
 import { AdminPageHeader, AdminDataTable, StatusBadge } from "@/features/admin"
 
 export const Route = createLazyFileRoute("/_admin/admin/users/")({
@@ -15,6 +16,7 @@ export const Route = createLazyFileRoute("/_admin/admin/users/")({
 })
 
 function AdminUsersPage() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const { data: users } = useSuspenseQuery({
     queryKey: ["admin-users"],
@@ -31,12 +33,12 @@ function AdminUsersPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Users"
-        subtitle="View and manage registered educators."
+        title={t("admin.users")}
+        subtitle={t("admin.viewUsers")}
         backTo="/admin"
       />
 
-      <AdminDataTable headers={["Name", "Email", "Role", "Joined", "Actions"]}>
+      <AdminDataTable headers={[t("admin.name"), t("admin.email"), t("admin.role"), t("admin.joined"), t("admin.actions")]}>
         {users?.map((u) => (
           <tr key={u.id} className="transition-colors hover:bg-muted/30">
             <td className="px-5 py-4 font-medium text-foreground">{u.name}</td>

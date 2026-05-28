@@ -12,6 +12,7 @@ import {
   IconArrowRight,
   IconBook,
 } from "@tabler/icons-react"
+import { useI18n } from "@/lib/i18n"
 import { AdminPageHeader } from "@/features/admin"
 
 export const Route = createLazyFileRoute("/_admin/admin/")({
@@ -19,6 +20,7 @@ export const Route = createLazyFileRoute("/_admin/admin/")({
 })
 
 function AdminOverviewPage() {
+  const { t } = useI18n()
   const { data: articles } = useSuspenseQuery({
     queryKey: ["admin-articles"],
     queryFn: adminGetArticlesFn,
@@ -41,15 +43,15 @@ function AdminOverviewPage() {
   })
 
   const stats = [
-    { label: "Articles", value: articles?.length ?? 0, icon: IconArticle, href: "/admin/articles" },
-    { label: "Courses", value: courses?.length ?? 0, icon: IconBook, href: "/admin/courses" },
-    { label: "Quizzes", value: quizzes?.length ?? 0, icon: IconHelp, href: "/admin/quizzes" },
-    { label: "Users", value: users?.length ?? 0, icon: IconUsers, href: "/admin/users" },
+    { label: t("admin.articles"), value: articles?.length ?? 0, icon: IconArticle, href: "/admin/articles" },
+    { label: t("admin.courses"), value: courses?.length ?? 0, icon: IconBook, href: "/admin/courses" },
+    { label: t("admin.quizzes"), value: quizzes?.length ?? 0, icon: IconHelp, href: "/admin/quizzes" },
+    { label: t("admin.users"), value: users?.length ?? 0, icon: IconUsers, href: "/admin/users" },
   ]
 
   return (
     <div>
-      <AdminPageHeader title="Overview" subtitle="Quick stats and recent activity." />
+      <AdminPageHeader title={t("admin.overview")} subtitle={t("admin.quickStats")} />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
@@ -71,7 +73,7 @@ function AdminOverviewPage() {
       </div>
 
       <div className="mt-12">
-        <h2 className="text-lg font-semibold text-foreground">Recent Contact Messages</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.recentContactMessages")}</h2>
         <div className="mt-4 space-y-3">
           {contacts && contacts.length > 0 ? (
             contacts.slice(0, 5).map((c) => (
@@ -81,7 +83,7 @@ function AdminOverviewPage() {
               >
                 <div>
                   <p className="text-sm font-medium text-foreground">{c.name}</p>
-                  <p className="text-xs text-muted-foreground">{c.email} &middot; {c.subject || "No subject"}</p>
+                  <p className="text-xs text-muted-foreground">{c.email} &middot; {c.subject || t("admin.noSubject")}</p>
                 </div>
                 <span className="text-xs text-muted-foreground">
                   {new Date(c.createdAt).toLocaleDateString()}
@@ -89,7 +91,7 @@ function AdminOverviewPage() {
               </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No messages yet.</p>
+            <p className="text-sm text-muted-foreground">{t("admin.noMessages")}</p>
           )}
         </div>
       </div>

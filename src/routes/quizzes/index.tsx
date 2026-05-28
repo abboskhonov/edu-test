@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getQuizzesFn } from "@/services/quizzes"
 import { IconArrowRight, IconClock } from "@tabler/icons-react"
 import { PublicGridSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/quizzes/")({
   component: QuizzesPage,
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/quizzes/")({
 })
 
 function QuizzesPage() {
+  const { t } = useI18n()
   const { data: quizzes } = useSuspenseQuery({
     queryKey: ["quizzes"],
     queryFn: getQuizzesFn,
@@ -32,13 +34,12 @@ function QuizzesPage() {
   return (
     <div className="px-4 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-sm font-medium text-muted-foreground">assessments</p>
+        <p className="text-sm font-medium text-muted-foreground">{t("quizzes.assessments")}</p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Knowledge Assessments
+          {t("quizzes.knowledgeAssessments")}
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-          Evaluate your expertise across six professional domains.
-          Get instant feedback and personalized recommendations.
+          {t("quizzes.evaluateExpertise")}
         </p>
       </div>
 
@@ -53,19 +54,19 @@ function QuizzesPage() {
                 {q.difficulty}
               </span>
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                <IconClock size={12} /> {q.timeLimitMinutes} min
+                <IconClock size={12} /> {q.timeLimitMinutes} {t("home.min")}
               </span>
             </div>
             <h3 className="font-medium text-foreground">{q.title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{q.description}</p>
             <div className="mt-auto flex items-center justify-between pt-2">
-              <span className="text-xs text-muted-foreground">{q.totalQuestions} questions</span>
+              <span className="text-xs text-muted-foreground">{q.totalQuestions} {t("home.questions")}</span>
               <Link
                 to="/quizzes/$id"
                 params={{ id: q.id }}
                 className="inline-flex h-8 items-center justify-center gap-1 rounded-full bg-primary px-4 text-xs font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96]"
               >
-                Start <IconArrowRight size={12} />
+                {t("quizzes.start")} <IconArrowRight size={12} />
               </Link>
             </div>
           </div>

@@ -1,24 +1,29 @@
 import { Link } from "@tanstack/react-router"
+import { useI18n } from "@/lib/i18n"
 
-const productLinks = [
-  { label: "Articles", href: "/articles" },
-  { label: "Courses", href: "/courses" },
-  { label: "Quizzes", href: "/quizzes" },
-  { label: "Resources", href: "/resources" },
-  { label: "Research", href: "/research" },
-]
-
-const companyLinks = [
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-]
-
-const legalLinks = [
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-]
+function useFooterLinks(t: (key: string) => string) {
+  return {
+    productLinks: [
+      { label: t("nav.articles"), href: "/articles" },
+      { label: t("nav.courses"), href: "/courses" },
+      { label: t("nav.quizzes"), href: "/quizzes" },
+      { label: t("nav.resources"), href: "/resources" },
+      { label: t("nav.research"), href: "/research" },
+    ],
+    companyLinks: [
+      { label: t("footer.about"), href: "/about" },
+      { label: t("footer.contact"), href: "/contact" },
+    ],
+    legalLinks: [
+      { label: t("footer.privacy"), href: "/privacy" },
+      { label: t("footer.terms"), href: "/terms" },
+    ],
+  }
+}
 
 export function Footer() {
+  const { t } = useI18n()
+  const { productLinks, companyLinks, legalLinks } = useFooterLinks(t)
   return (
     <footer className="w-full border-t border-border/30 px-4 py-20 md:py-28 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -32,14 +37,14 @@ export function Footer() {
               TWA
             </Link>
             <p className="max-w-xs text-[14px] leading-relaxed text-muted-foreground">
-              Research-based tools and professional development for writing educators worldwide.
+              {t("footer.brandDesc")}
             </p>
           </div>
 
           {/* Product */}
           <div className="flex flex-col gap-4">
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
-              Product
+              {t("footer.product")}
             </h4>
             <nav className="flex flex-col gap-2.5">
               {productLinks.map((link) => (
@@ -57,7 +62,7 @@ export function Footer() {
           {/* Company */}
           <div className="flex flex-col gap-4">
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
-              Company
+              {t("footer.company")}
             </h4>
             <nav className="flex flex-col gap-2.5">
               {companyLinks.map((link) => (
@@ -75,7 +80,7 @@ export function Footer() {
           {/* Legal */}
           <div className="flex flex-col gap-4">
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
-              Legal
+              {t("footer.legal")}
             </h4>
             <nav className="flex flex-col gap-2.5">
               {legalLinks.map((link) => (
@@ -94,10 +99,10 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border/20 pt-8 md:flex-row md:items-center">
           <p className="text-[12px] text-muted-foreground/50">
-            &copy; {new Date().getFullYear()} Teacher Writing Academy. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("footer.copyright")}
           </p>
           <p className="text-[12px] text-muted-foreground/50">
-            Built for educators, by educators.
+            {t("footer.builtFor")}
           </p>
         </div>
       </div>

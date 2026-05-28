@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { useI18n } from "@/lib/i18n"
 import {
   IconArticle,
   IconHelp,
@@ -11,17 +12,21 @@ import {
   IconPencil,
 } from "@tabler/icons-react"
 
-const navItems = [
-  { label: "Overview", href: "/admin", icon: IconLayoutDashboard },
-  { label: "Articles", href: "/admin/articles", icon: IconArticle },
-  { label: "Courses", href: "/admin/courses", icon: IconBook },
-  { label: "Quizzes", href: "/admin/quizzes", icon: IconHelp },
-  { label: "Resources", href: "/admin/resources", icon: IconDownload },
-  { label: "Users", href: "/admin/users", icon: IconUsers },
-  { label: "Contacts", href: "/admin/contacts", icon: IconMessage },
-]
+function getNavItems(t: (key: string) => string) {
+  return [
+    { label: t("admin.overview"), href: "/admin", icon: IconLayoutDashboard },
+    { label: t("admin.articles"), href: "/admin/articles", icon: IconArticle },
+    { label: t("admin.courses"), href: "/admin/courses", icon: IconBook },
+    { label: t("admin.quizzes"), href: "/admin/quizzes", icon: IconHelp },
+    { label: t("admin.resources"), href: "/admin/resources", icon: IconDownload },
+    { label: t("admin.users"), href: "/admin/users", icon: IconUsers },
+    { label: t("admin.contacts"), href: "/admin/contacts", icon: IconMessage },
+  ]
+}
 
 export function AdminSidebar() {
+  const { t } = useI18n()
+  const navItems = getNavItems(t)
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-dvh w-[15rem] flex-col bg-card border-r border-border/20 lg:flex">
       {/* Header */}
@@ -31,8 +36,8 @@ export function AdminSidebar() {
             <IconPencil size={15} stroke={2.5} />
           </div>
           <div className="min-w-0">
-            <p className="text-[13px] font-semibold tracking-tight text-foreground">Teacher Writing Academy</p>
-            <p className="text-[11px] font-medium text-muted-foreground/60 tracking-wide">Admin</p>
+            <p className="text-[13px] font-semibold tracking-tight text-foreground">{t("admin.teacherWritingAcademy")}</p>
+            <p className="text-[11px] font-medium text-muted-foreground/60 tracking-wide">{t("admin.admin")}</p>
           </div>
         </div>
       </div>
@@ -73,7 +78,7 @@ export function AdminSidebar() {
             stroke={2.5}
             className="transition-transform duration-200 group-hover:-translate-x-[2px]"
           />
-          <span className="font-medium">Back to site</span>
+          <span className="font-medium">{t("admin.backToSite")}</span>
         </Link>
       </div>
     </aside>

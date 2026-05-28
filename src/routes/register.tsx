@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/register")({ component: RegisterPage })
 
 function RegisterPage() {
+  const { t } = useI18n()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -19,12 +21,12 @@ function RegisterPage() {
     <div className="flex min-h-[80dvh] items-center justify-center px-4 py-24">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">Join the Academy</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Create your free account to access articles, quizzes, and resources.</p>
+          <h1 className="text-3xl font-semibold tracking-tight">{t("auth.joinAcademy")}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{t("auth.registerDesc")}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Full name</label>
+            <label className="text-sm font-medium">{t("auth.fullName")}</label>
             <input
               type="text"
               value={name}
@@ -35,7 +37,7 @@ function RegisterPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Email</label>
+            <label className="text-sm font-medium">{t("auth.email")}</label>
             <input
               type="email"
               value={email}
@@ -46,7 +48,7 @@ function RegisterPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Password</label>
+            <label className="text-sm font-medium">{t("auth.password")}</label>
             <input
               type="password"
               value={password}
@@ -59,7 +61,7 @@ function RegisterPage() {
           </div>
           {signUp.isError && (
             <p className="text-sm text-destructive">
-              {signUp.error instanceof Error ? signUp.error.message : "Registration failed"}
+              {signUp.error instanceof Error ? signUp.error.message : t("auth.registrationFailed")}
             </p>
           )}
           <button
@@ -67,12 +69,12 @@ function RegisterPage() {
             disabled={signUp.isPending}
             className="h-11 w-full rounded-full bg-primary text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96] disabled:opacity-50"
           >
-            {signUp.isPending ? "Creating account..." : "Create account"}
+            {signUp.isPending ? t("auth.creatingAccount") : t("auth.createAccount")}
           </button>
         </form>
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link to="/login" className="font-medium text-foreground hover:underline">Log in</Link>
+          {t("auth.haveAccount")}{" "}
+          <Link to="/login" className="font-medium text-foreground hover:underline">{t("auth.logInLink")}</Link>
         </p>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { getSavedArticlesFn } from "@/services/articles"
 import { getUserCoursesFn } from "@/services/courses"
 import { IconBook, IconCertificate, IconDownload, IconStar, IconArrowRight, IconTrendingUp, IconTrendingDown, IconPlayerPlay } from "@tabler/icons-react"
 import { DashboardSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/_authed/dashboard/")({
   component: DashboardPage,
@@ -45,6 +46,7 @@ export const Route = createFileRoute("/_authed/dashboard/")({
 })
 
 function DashboardPage() {
+  const { t } = useI18n()
   const { userId } = Route.useLoaderData()
 
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -85,7 +87,7 @@ function DashboardPage() {
   if (!userId) {
     return (
       <div className="px-4 py-24 text-center">
-        <p className="text-muted-foreground">Please log in to view your dashboard.</p>
+        <p className="text-muted-foreground">{t("dashboard.loginPrompt")}</p>
       </div>
     )
   }
@@ -96,9 +98,9 @@ function DashboardPage() {
     <div className="px-4 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div>
-          <p className="text-sm font-medium text-muted-foreground">your space</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Dashboard</h1>
-          <p className="mt-2 text-muted-foreground">Your personal learning hub and progress overview.</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("dashboard.yourSpace")}</p>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{t("dashboard.title")}</h1>
+          <p className="mt-2 text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
 
         {/* Loading state */}
@@ -112,21 +114,21 @@ function DashboardPage() {
         {!isLoading && (
           <>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard icon={IconCertificate} label="Quizzes Taken" value={String(stats?.quizzesTaken ?? 0)} />
-              <StatCard icon={IconStar} label="Avg. Score" value={`${stats?.avgScore ?? 0}%`} />
-              <StatCard icon={IconBook} label="Saved Articles" value={String(stats?.savedArticles ?? 0)} />
-              <StatCard icon={IconDownload} label="Downloads" value={String(stats?.downloads ?? 0)} />
+              <StatCard icon={IconCertificate} label={t("dashboard.quizzesTaken")} value={String(stats?.quizzesTaken ?? 0)} />
+              <StatCard icon={IconStar} label={t("dashboard.avgScore")} value={`${stats?.avgScore ?? 0}%`} />
+              <StatCard icon={IconBook} label={t("dashboard.savedArticles")} value={String(stats?.savedArticles ?? 0)} />
+              <StatCard icon={IconDownload} label={t("dashboard.downloads")} value={String(stats?.downloads ?? 0)} />
             </div>
 
             {/* Recent quizzes */}
             <div className="mt-14">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">Recent Quiz Results</h2>
+                <h2 className="text-lg font-semibold text-foreground">{t("dashboard.recentQuizResults")}</h2>
                 <Link
                   to="/quizzes"
                   className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
                 >
-                  Take a quiz <IconArrowRight size={14} />
+                  {t("dashboard.takeQuiz")} <IconArrowRight size={14} />
                 </Link>
               </div>
 
@@ -158,12 +160,12 @@ function DashboardPage() {
                 </div>
               ) : (
                 <div className="mt-4 rounded-2xl border border-dashed border-border/60 bg-card p-8 text-center">
-                  <p className="text-muted-foreground">No quiz attempts yet.</p>
+                  <p className="text-muted-foreground">{t("dashboard.noQuizAttempts")}</p>
                   <Link
                     to="/quizzes"
                     className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
-                    Take your first quiz <IconArrowRight size={14} />
+                    {t("dashboard.firstQuiz")} <IconArrowRight size={14} />
                   </Link>
                 </div>
               )}
@@ -171,7 +173,7 @@ function DashboardPage() {
 
             {/* Saved Articles */}
             <div className="mt-14">
-              <h2 className="text-lg font-semibold text-foreground">Saved Articles</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("dashboard.savedArticlesTitle")}</h2>
               {saved && saved.length > 0 ? (
                 <div className="mt-4 space-y-3">
                   {saved.slice(0, 5).map((s) => (
@@ -191,12 +193,12 @@ function DashboardPage() {
                 </div>
               ) : (
                 <div className="mt-4 rounded-2xl border border-dashed border-border/60 bg-card p-8 text-center">
-                  <p className="text-muted-foreground">No saved articles yet.</p>
+                  <p className="text-muted-foreground">{t("dashboard.noSavedArticles")}</p>
                   <Link
                     to="/articles"
                     className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
-                    Browse articles <IconArrowRight size={14} />
+                    {t("dashboard.browseArticles")} <IconArrowRight size={14} />
                   </Link>
                 </div>
               )}
@@ -205,12 +207,12 @@ function DashboardPage() {
             {/* Enrolled Courses */}
             <div className="mt-14">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">My Courses</h2>
+                <h2 className="text-lg font-semibold text-foreground">{t("dashboard.myCourses")}</h2>
                 <Link
                   to="/courses"
                   className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
                 >
-                  Browse courses <IconArrowRight size={14} />
+                  {t("dashboard.browseCourses")} <IconArrowRight size={14} />
                 </Link>
               </div>
               {userCourses && userCourses.length > 0 ? (
@@ -229,7 +231,7 @@ function DashboardPage() {
                         <div>
                           <p className="font-medium text-foreground transition-colors group-hover:text-primary">{uc.course.title}</p>
                           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{uc.progress.completed} / {uc.progress.total} modules</span>
+                            <span>{uc.progress.completed} / {uc.progress.total} {t("dashboard.modules")}</span>
                             <span className="rounded-full bg-muted px-2 py-0.5 font-medium">{uc.progress.percentage}%</span>
                           </div>
                         </div>
@@ -240,12 +242,12 @@ function DashboardPage() {
                 </div>
               ) : (
                 <div className="mt-4 rounded-2xl border border-dashed border-border/60 bg-card p-8 text-center">
-                  <p className="text-muted-foreground">No enrolled courses yet.</p>
+                  <p className="text-muted-foreground">{t("dashboard.noEnrolledCourses")}</p>
                   <Link
                     to="/courses"
                     className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
-                    Browse courses <IconArrowRight size={14} />
+                    {t("dashboard.browseCourses")} <IconArrowRight size={14} />
                   </Link>
                 </div>
               )}
@@ -257,19 +259,19 @@ function DashboardPage() {
                 <div className="rounded-2xl border border-border/60 bg-card p-6">
                   <div className="flex items-center gap-2 text-emerald-600">
                     <IconTrendingUp size={20} />
-                    <h3 className="font-semibold">Strongest Area</h3>
+                    <h3 className="font-semibold">{t("dashboard.strongestArea")}</h3>
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Keep building on your quiz performance. Your highest scores show where your expertise shines.
+                    {t("dashboard.strongestAreaDesc")}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-card p-6">
                   <div className="flex items-center gap-2 text-amber-600">
                     <IconTrendingDown size={20} />
-                    <h3 className="font-semibold">Growth Area</h3>
+                    <h3 className="font-semibold">{t("dashboard.growthArea")}</h3>
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Lower quiz scores point to topics worth reviewing. Check recommended articles below.
+                    {t("dashboard.growthAreaDesc")}
                   </p>
                 </div>
               </div>

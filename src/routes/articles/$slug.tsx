@@ -4,6 +4,7 @@ import { getArticleBySlugFn, getSavedArticlesFn, toggleSaveArticleFn } from "@/s
 import { IconArrowLeft, IconBook, IconShare, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react"
 import { ArticleDetailSkeleton } from "@/components/skeletons"
 import { useAuth } from "@/hooks/use-auth"
+import { useI18n } from "@/lib/i18n"
 import { toast } from "sonner"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/articles/$slug")({
 })
 
 function ArticleDetailPage() {
+  const { t } = useI18n()
   const { slug } = Route.useParams()
   const queryClient = useQueryClient()
   const { user } = useAuth()
@@ -49,9 +51,9 @@ function ArticleDetailPage() {
   if (!article) {
     return (
       <div className="px-4 py-24 text-center">
-        <h1 className="text-2xl font-semibold">Article not found</h1>
+        <h1 className="text-2xl font-semibold">{t("articles.articleNotFound")}</h1>
         <Link to="/articles" className="mt-4 inline-flex items-center gap-1 text-primary hover:underline">
-          <IconArrowLeft size={16} /> Back to articles
+          <IconArrowLeft size={16} /> {t("articles.backToArticles")}
         </Link>
       </div>
     )
@@ -64,7 +66,7 @@ function ArticleDetailPage() {
           to="/articles"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          <IconArrowLeft size={16} /> All articles
+          <IconArrowLeft size={16} /> {t("articles.allArticles")}
         </Link>
 
         <div className="mt-8">
@@ -103,17 +105,17 @@ function ArticleDetailPage() {
               }`}
             >
               {isSaved ? <IconBookmarkFilled size={14} /> : <IconBookmark size={14} />}
-              {isSaved ? "Saved" : "Save"}
+              {isSaved ? t("articles.saved") : t("articles.save")}
             </button>
           )}
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href)
-              toast.success("Link copied to clipboard")
+              toast.success(t("articles.linkCopied"))
             }}
             className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <IconShare size={14} /> Share
+            <IconShare size={14} /> {t("articles.share")}
           </button>
         </div>
 

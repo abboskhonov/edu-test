@@ -2,6 +2,7 @@ import { createLazyFileRoute } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { adminGetContactsFn } from "@/services/admin/contacts"
 import { IconMail } from "@tabler/icons-react"
+import { useI18n } from "@/lib/i18n"
 import { AdminPageHeader } from "@/features/admin"
 
 export const Route = createLazyFileRoute("/_admin/admin/contacts/")({
@@ -9,6 +10,7 @@ export const Route = createLazyFileRoute("/_admin/admin/contacts/")({
 })
 
 function AdminContactsPage() {
+  const { t } = useI18n()
   const { data: contacts } = useSuspenseQuery({
     queryKey: ["admin-contacts"],
     queryFn: adminGetContactsFn,
@@ -17,8 +19,8 @@ function AdminContactsPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Contact Submissions"
-        subtitle="Messages from the contact form."
+        title={t("admin.contactSubmissions")}
+        subtitle={t("admin.messagesFromContact")}
         backTo="/admin"
       />
 
@@ -50,7 +52,7 @@ function AdminContactsPage() {
             </div>
           ))
         ) : (
-          <p className="text-sm text-muted-foreground">No contact submissions yet.</p>
+          <p className="text-sm text-muted-foreground">{t("admin.noContactSubmissions")}</p>
         )}
       </div>
     </div>

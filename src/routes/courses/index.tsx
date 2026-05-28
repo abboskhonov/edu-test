@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { getCoursesFn } from "@/services/courses"
 import { useInView } from "@/hooks/use-in-view"
 import { IconArrowRight, IconStack } from "@tabler/icons-react"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/courses/")({
   component: CoursesPage,
@@ -30,6 +31,7 @@ function ScrollReveal({ children, className = "", delay = 0 }: {
 }
 
 function CoursesPage() {
+  const { t } = useI18n()
   const { data: courses } = useSuspenseQuery({
     queryKey: ["courses"],
     queryFn: getCoursesFn,
@@ -42,13 +44,13 @@ function CoursesPage() {
         <ScrollReveal className="mb-16 md:mb-20">
           <div className="max-w-xl">
             <span className="mb-5 inline-block rounded-full bg-black/[0.03] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Professional Development
+              {t("courses.professionalDevelopment")}
             </span>
             <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-              Courses
+              {t("courses.courses")}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Structured learning paths to deepen your writing pedagogy expertise.
+              {t("courses.coursesDesc")}
             </p>
           </div>
         </ScrollReveal>
@@ -68,11 +70,11 @@ function CoursesPage() {
                     {/* Category badge */}
                     <div className="flex items-center gap-2">
                       <span className="rounded-full bg-primary/[0.06] px-3 py-1 text-[11px] font-medium text-primary">
-                        {course.category || "General"}
+                        {course.category || t("courses.general")}
                       </span>
                       {course.featured && (
                         <span className="rounded-full bg-amber-500/[0.08] px-2.5 py-1 text-[10px] font-medium text-amber-600">
-                          Featured
+                          {t("courses.featured")}
                         </span>
                       )}
                     </div>
@@ -82,7 +84,7 @@ function CoursesPage() {
                     </h3>
 
                     <p className="text-[14px] leading-relaxed text-muted-foreground">
-                      {course.description || "No description available."}
+                      {course.description || t("admin.noDescription")}
                     </p>
 
                     {/* Meta row */}
@@ -90,11 +92,11 @@ function CoursesPage() {
                       <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <IconStack size={13} stroke={1.5} />
-                          {(course as any).moduleCount ?? 0} modules
+                          {(course as any).moduleCount ?? 0} {t("courses.modules")}
                         </span>
                       </div>
                       <span className="flex items-center gap-1 text-[13px] font-medium text-foreground transition-all group-hover:text-primary">
-                        Start
+                        {t("courses.start")}
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-black/5 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-black/10">
                           <IconArrowRight size={11} stroke={1.5} />
                         </span>
@@ -109,7 +111,7 @@ function CoursesPage() {
 
         {(!courses || courses.length === 0) && (
           <ScrollReveal className="mt-16 text-center">
-            <p className="text-muted-foreground">No courses available yet.</p>
+            <p className="text-muted-foreground">{t("courses.noCoursesAvailable")}</p>
           </ScrollReveal>
         )}
       </div>

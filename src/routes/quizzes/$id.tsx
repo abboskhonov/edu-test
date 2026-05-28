@@ -5,6 +5,7 @@ import { getQuizByIdFn, submitQuizAttemptFn } from "@/services/quizzes"
 import { useAuth } from "@/hooks/use-auth"
 import { IconArrowLeft, IconArrowRight, IconClock, IconCheck, IconFlag } from "@tabler/icons-react"
 import { QuizPageSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/quizzes/$id")({
   component: QuizPage,
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/quizzes/$id")({
 })
 
 function QuizPage() {
+  const { t } = useI18n()
   const { id } = Route.useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -108,9 +110,9 @@ function QuizPage() {
   if (!quizData || !currentQ) {
     return (
       <div className="px-4 py-24 text-center">
-        <h1 className="text-2xl font-semibold">Quiz not found</h1>
+        <h1 className="text-2xl font-semibold">{t("quizzes.quizNotFound")}</h1>
         <Link to="/quizzes" className="mt-4 inline-flex items-center gap-1 text-primary hover:underline">
-          <IconArrowLeft size={16} /> Back to quizzes
+          <IconArrowLeft size={16} /> {t("quizzes.backToQuizzes")}
         </Link>
       </div>
     )
@@ -143,7 +145,7 @@ function QuizPage() {
         <div className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
           <div className="mb-6 flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              Question {currentIndex + 1} of {questions.length}
+              {t("quizzes.question")} {currentIndex + 1} {t("quizzes.of")} {questions.length}
             </span>
             <button
               onClick={() => {
@@ -159,7 +161,7 @@ function QuizPage() {
               }`}
             >
               <IconFlag size={12} />
-              {flagged.has(currentIndex) ? "Flagged" : "Flag"}
+              {flagged.has(currentIndex) ? t("quizzes.flagged") : t("quizzes.flag")}
             </button>
           </div>
 
@@ -198,7 +200,7 @@ function QuizPage() {
             disabled={currentIndex === 0}
             className="inline-flex h-10 items-center gap-1 rounded-full px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
           >
-            <IconArrowLeft size={16} /> Previous
+            <IconArrowLeft size={16} /> {t("quizzes.previous")}
           </button>
 
           {/* Question dots */}
@@ -225,7 +227,7 @@ function QuizPage() {
               onClick={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
               className="inline-flex h-10 items-center gap-1 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96]"
             >
-              Next <IconArrowRight size={16} />
+              {t("quizzes.next")} <IconArrowRight size={16} />
             </button>
           ) : (
             <button
@@ -233,8 +235,8 @@ function QuizPage() {
               disabled={submitMutation.isPending}
               className="inline-flex h-10 items-center gap-1 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.96] disabled:opacity-50"
             >
-              {submitMutation.isPending ? "Submitting..." : (
-                <><IconCheck size={16} /> Submit</>
+              {submitMutation.isPending ? t("quizzes.submitting") : (
+                <><IconCheck size={16} /> {t("quizzes.submit")}</>
               )}
             </button>
           )}
@@ -243,11 +245,11 @@ function QuizPage() {
         {/* Login warning for guests */}
         {!user && (
           <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-            <p className="font-medium">You are not logged in.</p>
+            <p className="font-medium">{t("quizzes.notLoggedIn")}</p>
             <p className="mt-1">
-              <Link to="/login" className="font-medium underline">Log in</Link> or{" "}
-              <Link to="/register" className="font-medium underline">register</Link>{" "}
-              to save your quiz results and earn certificates.
+              <Link to="/login" className="font-medium underline">{t("quizzes.logIn")}</Link> {t("quizzes.or")}{" "}
+              <Link to="/register" className="font-medium underline">{t("quizzes.register")}</Link>{" "}
+              {t("quizzes.loginToSave")}
             </p>
           </div>
         )}

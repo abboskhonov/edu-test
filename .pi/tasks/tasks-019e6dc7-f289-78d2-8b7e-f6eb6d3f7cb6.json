@@ -1,0 +1,65 @@
+{
+  "nextId": 6,
+  "tasks": [
+    {
+      "id": "1",
+      "subject": "Add courses schema to database",
+      "description": "Add new tables: courses, courseModules, courseEnrollments, moduleProgress. Then update db:push.",
+      "status": "completed",
+      "activeForm": "Adding courses schema",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1779958665703,
+      "updatedAt": 1779958844714
+    },
+    {
+      "id": "2",
+      "subject": "Build admin courses CRUD pages",
+      "description": "Create admin routes: /admin/courses (list), /admin/courses/create (create), /admin/courses/$id (edit course + manage modules). Include course modules sub-section inside edit page.",
+      "status": "completed",
+      "activeForm": "Building admin courses CRUD",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1779958665703,
+      "updatedAt": 1779958846197
+    },
+    {
+      "id": "3",
+      "subject": "Build public courses pages",
+      "description": "Create /courses (list), /courses/$id (course detail + module list), /courses/$id/modules/$moduleId (module viewer with theory/practice tabs).",
+      "status": "completed",
+      "activeForm": "Building public courses pages",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1779958665704,
+      "updatedAt": 1779958846197
+    },
+    {
+      "id": "4",
+      "subject": "Build course enrollment and progress tracking",
+      "description": "Add enrollment button on course detail, track progress in moduleProgress table, show enrolled courses on dashboard.",
+      "status": "completed",
+      "activeForm": "Building enrollment and progress tracking",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1779958665704,
+      "updatedAt": 1779958846198
+    },
+    {
+      "id": "5",
+      "subject": "Add course API routes and services",
+      "description": "Create server functions for courses CRUD, modules CRUD, enrollment, progress.",
+      "status": "completed",
+      "activeForm": "Adding course API routes and services",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1779958665704,
+      "updatedAt": 1779958844716
+    }
+  ]
+}

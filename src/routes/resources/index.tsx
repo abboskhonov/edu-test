@@ -4,6 +4,7 @@ import { getResourcesFn, trackDownloadFn } from "@/services/resources"
 import { useAuth } from "@/hooks/use-auth"
 import { IconBook, IconCertificate, IconLibrary, IconFileText, IconDownload } from "@tabler/icons-react"
 import { PublicListSkeleton } from "@/components/skeletons"
+import { useI18n } from "@/lib/i18n"
 
 export const Route = createFileRoute("/resources/")({
   component: ResourcesPage,
@@ -29,6 +30,7 @@ const iconMap: Record<string, typeof IconBook> = {
 }
 
 function ResourcesPage() {
+  const { t } = useI18n()
   const { user } = useAuth()
   const { data: resources } = useSuspenseQuery({
     queryKey: ["resources"],
@@ -59,12 +61,12 @@ function ResourcesPage() {
   return (
     <div className="px-4 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-sm font-medium text-muted-foreground">downloads</p>
+        <p className="text-sm font-medium text-muted-foreground">{t("resources.downloads")}</p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Resource Library
+          {t("resources.resourceLibrary")}
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-          Lesson plans, worksheets, rubrics, and classroom tools ready to use.
+          {t("resources.resourcesDesc")}
         </p>
       </div>
 
@@ -78,7 +80,7 @@ function ResourcesPage() {
                   <Icon size={18} stroke={1.5} />
                 </div>
                 <h2 className="text-lg font-semibold text-foreground">{category}</h2>
-                <span className="text-sm text-muted-foreground">({items.length} files)</span>
+                <span className="text-sm text-muted-foreground">({items.length} {t("resources.files")})</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 {items.map((r) => (
@@ -91,7 +93,7 @@ function ResourcesPage() {
                       <p className="mt-0.5 text-xs text-muted-foreground">{r.description}</p>
                       <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                         <span className="rounded bg-muted px-1.5 py-0.5">{r.fileType}</span>
-                        <span>{r.downloadCount} downloads</span>
+                        <span>{r.downloadCount} {t("resources.downloadsCount")}</span>
                       </div>
                     </div>
                     <button
