@@ -3,13 +3,14 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/lib/query-client"
+import { I18nProvider } from "@/lib/i18n"
 
 import { Navbar } from "@/features/marketing/navbar"
 import { Footer } from "@/features/marketing/footer"
 import { Toaster } from "@/components/ui/sonner"
 import { getSessionFn } from "@/services/auth"
 import type { AuthSession } from "@/lib/auth"
-import appCss from "../styles.css?url"
+import "../styles.css"
 
 interface MyRouterContext {
   session: AuthSession | null
@@ -24,7 +25,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { title: "Teacher Writing Academy" },
       { name: "description", content: "Professional writing pedagogy hub for educators. Articles, quizzes, and resources to advance your teaching expertise." },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [],
   }),
   beforeLoad: async () => {
     const session = await getSessionFn()
@@ -50,17 +51,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="flex min-h-svh flex-col bg-background text-foreground antialiased">
-        <QueryClientProvider client={queryClient}>
-          {!isAdmin && !isCourseDetail && <Navbar />}
-          <main className="flex-1">{children}</main>
-          {!isAdmin && <Footer />}
-          <Toaster />
-          <TanStackDevtools
-            config={{ position: "bottom-right" }}
-            plugins={[{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> }]}
-          />
-          <Scripts />
-        </QueryClientProvider>
+        <I18nProvider>
+          <QueryClientProvider client={queryClient}>
+            {!isAdmin && !isCourseDetail && <Navbar />}
+            <main className="flex-1">{children}</main>
+            {!isAdmin && <Footer />}
+            <Toaster />
+            <TanStackDevtools
+              config={{ position: "bottom-right" }}
+              plugins={[{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> }]}
+            />
+            <Scripts />
+          </QueryClientProvider>
+        </I18nProvider>
       </body>
     </html>
   )
