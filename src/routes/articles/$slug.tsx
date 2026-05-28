@@ -4,6 +4,7 @@ import { getArticleBySlugFn, getSavedArticlesFn, toggleSaveArticleFn } from "@/s
 import { IconArrowLeft, IconBook, IconShare, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react"
 import { ArticleDetailSkeleton } from "@/components/skeletons"
 import { useAuth } from "@/hooks/use-auth"
+import { toast } from "sonner"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -108,7 +109,7 @@ function ArticleDetailPage() {
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href)
-              alert("Link copied to clipboard")
+              toast.success("Link copied to clipboard")
             }}
             className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >

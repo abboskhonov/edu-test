@@ -6,6 +6,7 @@ import { queryClient } from "@/lib/query-client"
 
 import { Navbar } from "@/features/marketing/navbar"
 import { Footer } from "@/features/marketing/footer"
+import { Toaster } from "@/components/ui/sonner"
 import { getSessionFn } from "@/services/auth"
 import type { AuthSession } from "@/lib/auth"
 import appCss from "../styles.css?url"
@@ -41,6 +42,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootDocument({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isAdmin = pathname.startsWith("/admin")
+  const isCourseDetail = /^\/courses\/[^/]+$/.test(pathname)
 
   return (
     <html lang="en">
@@ -49,9 +51,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="flex min-h-svh flex-col bg-background text-foreground antialiased">
         <QueryClientProvider client={queryClient}>
-          {!isAdmin && <Navbar />}
+          {!isAdmin && !isCourseDetail && <Navbar />}
           <main className="flex-1">{children}</main>
           {!isAdmin && <Footer />}
+          <Toaster />
           <TanStackDevtools
             config={{ position: "bottom-right" }}
             plugins={[{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> }]}

@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query"
 import { getDashboardDataFn, getDashboardStatsFn } from "@/services/dashboard"
 import { getQuizAttemptsFn } from "@/services/quizzes"
 import { getSavedArticlesFn } from "@/services/articles"
-import { IconBook, IconCertificate, IconDownload, IconStar, IconArrowRight, IconTrendingUp, IconTrendingDown } from "@tabler/icons-react"
+import { getUserCoursesFn } from "@/services/courses"
+import { IconBook, IconCertificate, IconDownload, IconStar, IconArrowRight, IconTrendingUp, IconTrendingDown, IconPlayerPlay } from "@tabler/icons-react"
 import { DashboardSkeleton } from "@/components/skeletons"
 
 export const Route = createFileRoute("/_authed/dashboard/")({
@@ -30,6 +31,10 @@ export const Route = createFileRoute("/_authed/dashboard/")({
         context.queryClient.ensureQueryData({
           queryKey: ["saved-articles", userId],
           queryFn: () => getSavedArticlesFn({ data: { userId } } as any),
+        }),
+        context.queryClient.ensureQueryData({
+          queryKey: ["user-courses", userId],
+          queryFn: () => getUserCoursesFn({ data: { userId } } as any),
         }),
       ])
     } catch {
@@ -70,6 +75,13 @@ function DashboardPage() {
     staleTime: 60 * 1000,
   })
 
+  const { data: userCourses, isLoading: coursesLoading } = useQuery({
+    queryKey: ["user-courses", userId],
+    queryFn: () => getUserCoursesFn({ data: { userId: userId! } } as any),
+    enabled: !!userId,
+    staleTime: 60 * 1000,
+  })
+
   if (!userId) {
     return (
       <div className="px-4 py-24 text-center">
@@ -78,7 +90,7 @@ function DashboardPage() {
     )
   }
 
-  const isLoading = statsLoading || dashboardLoading || attemptsLoading || savedLoading
+  const isLoading = statsLoading || dashboardLoading || attemptsLoading || savedLoading || coursesLoading
 
   return (
     <div className="px-4 py-24 sm:py-32 lg:px-8">
@@ -185,6 +197,55 @@ function DashboardPage() {
                     className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
                     Browse articles <IconArrowRight size={14} />
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Enrolled Courses */}
+            <div className="mt-14">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">My Courses</h2>
+                <Link
+                  to="/courses"
+                  className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                >
+                  Browse courses <IconArrowRight size={14} />
+                </Link>
+              </div>
+              {userCourses && userCourses.length > 0 ? (
+                <div className="mt-4 space-y-3">
+                  {userCourses.map((uc: any) => (
+                    <Link
+                      key={uc.enrollment.id}
+                      to="/courses/$id"
+                      params={{ id: uc.course.id }}
+                      className="group flex items-center justify-between rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-border"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <IconPlayerPlay size={20} stroke={1.5} />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground transition-colors group-hover:text-primary">{uc.course.title}</p>
+                          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{uc.progress.completed} / {uc.progress.total} modules</span>
+                            <span className="rounded-full bg-muted px-2 py-0.5 font-medium">{uc.progress.percentage}%</span>
+                          </div>
+                        </div>
+                      </div>
+                      <IconArrowRight size={16} className="text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-4 rounded-2xl border border-dashed border-border/60 bg-card p-8 text-center">
+                  <p className="text-muted-foreground">No enrolled courses yet.</p>
+                  <Link
+                    to="/courses"
+                    className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                  >
+                    Browse courses <IconArrowRight size={14} />
                   </Link>
                 </div>
               )}

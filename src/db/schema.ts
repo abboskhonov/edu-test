@@ -151,3 +151,46 @@ export const newsletters = pgTable("newsletters", {
   email: text("email").notNull().unique(),
   subscribedAt: timestamp("subscribed_at").notNull().defaultNow(),
 })
+
+// ── Courses ──
+export const courses = pgTable("courses", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  category: text("category"),
+  status: text("status").notNull().default("draft"),
+  featured: boolean("featured").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const courseModules = pgTable("course_modules", {
+  id: text("id").primaryKey(),
+  courseId: text("course_id").notNull().references(() => courses.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  theoryContent: text("theory_content"),
+  practiceContent: text("practice_content"),
+  order: integer("order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const courseEnrollments = pgTable("course_enrollments", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  courseId: text("course_id").notNull().references(() => courses.id),
+  enrolledAt: timestamp("enrolled_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+})
+
+export const moduleProgress = pgTable("module_progress", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id),
+  moduleId: text("module_id").notNull().references(() => courseModules.id),
+  completed: boolean("completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})

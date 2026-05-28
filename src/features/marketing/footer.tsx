@@ -1,56 +1,104 @@
 import { Link } from "@tanstack/react-router"
-import { IconBook } from "@tabler/icons-react"
 
-const footerLinks = [
+const productLinks = [
   { label: "Articles", href: "/articles" },
+  { label: "Courses", href: "/courses" },
   { label: "Quizzes", href: "/quizzes" },
   { label: "Resources", href: "/resources" },
   { label: "Research", href: "/research" },
+]
+
+const companyLinks = [
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ]
 
+const legalLinks = [
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+]
+
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border/40 px-4 py-12 lg:px-8">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-6">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <IconBook size={14} stroke={2.5} />
-          </span>
-          Teacher Writing Academy
-        </Link>
-
-        {/* Links */}
-        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          {footerLinks.map((link) => (
+    <footer className="w-full border-t border-border/30 px-4 py-20 md:py-28 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+          {/* Brand */}
+          <div className="flex flex-col gap-4">
             <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              to="/"
+              className="text-sm font-semibold tracking-tight text-foreground transition-colors hover:text-muted-foreground"
             >
-              {link.label}
+              TWA
             </Link>
-          ))}
-        </nav>
-
-        {/* Divider */}
-        <div className="h-px w-16 bg-border" />
-
-        {/* Bottom */}
-        <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-xs text-muted-foreground/60">
-            &copy; {new Date().getFullYear()} Teacher Writing Academy
-          </p>
-          <div className="flex items-center gap-4">
-            <Link to="/privacy" className="text-xs text-muted-foreground/60 hover:text-foreground">
-              Privacy
-            </Link>
-            <Link to="/terms" className="text-xs text-muted-foreground/60 hover:text-foreground">
-              Terms
-            </Link>
+            <p className="max-w-xs text-[14px] leading-relaxed text-muted-foreground">
+              Research-based tools and professional development for writing educators worldwide.
+            </p>
           </div>
+
+          {/* Product */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
+              Product
+            </h4>
+            <nav className="flex flex-col gap-2.5">
+              {productLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-[14px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Company */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
+              Company
+            </h4>
+            <nav className="flex flex-col gap-2.5">
+              {companyLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-[14px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Legal */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
+              Legal
+            </h4>
+            <nav className="flex flex-col gap-2.5">
+              {legalLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-[14px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border/20 pt-8 md:flex-row md:items-center">
+          <p className="text-[12px] text-muted-foreground/50">
+            &copy; {new Date().getFullYear()} Teacher Writing Academy. All rights reserved.
+          </p>
+          <p className="text-[12px] text-muted-foreground/50">
+            Built for educators, by educators.
+          </p>
         </div>
       </div>
     </footer>

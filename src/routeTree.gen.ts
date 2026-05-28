@@ -21,8 +21,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResearchIndexRouteImport } from './routes/research/index'
 import { Route as QuizzesIndexRouteImport } from './routes/quizzes/index'
+import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
 import { Route as QuizzesIdRouteImport } from './routes/quizzes/$id'
+import { Route as CoursesIdRouteImport } from './routes/courses/$id'
 import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
 import { Route as AuthedDashboardIndexRouteImport } from './routes/_authed/dashboard/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
@@ -31,12 +33,16 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AdminAdminUsersIndexRouteImport } from './routes/_admin/admin/users/index'
 import { Route as AdminAdminResourcesIndexRouteImport } from './routes/_admin/admin/resources/index'
 import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
+import { Route as AdminAdminCoursesIndexRouteImport } from './routes/_admin/admin/courses/index'
 import { Route as AdminAdminContactsIndexRouteImport } from './routes/_admin/admin/contacts/index'
 import { Route as AdminAdminArticlesIndexRouteImport } from './routes/_admin/admin/articles/index'
+import { Route as CoursesIdModulesModuleIdRouteImport } from './routes/courses/$id.modules.$moduleId'
 import { Route as AdminAdminResourcesCreateRouteImport } from './routes/_admin/admin/resources/create'
 import { Route as AdminAdminResourcesIdRouteImport } from './routes/_admin/admin/resources/$id'
 import { Route as AdminAdminQuizzesCreateRouteImport } from './routes/_admin/admin/quizzes/create'
 import { Route as AdminAdminQuizzesIdRouteImport } from './routes/_admin/admin/quizzes/$id'
+import { Route as AdminAdminCoursesCreateRouteImport } from './routes/_admin/admin/courses/create'
+import { Route as AdminAdminCoursesIdRouteImport } from './routes/_admin/admin/courses/$id'
 import { Route as AdminAdminArticlesCreateRouteImport } from './routes/_admin/admin/articles/create'
 import { Route as AdminAdminArticlesIdRouteImport } from './routes/_admin/admin/articles/$id'
 
@@ -77,7 +83,7 @@ const AuthedRouteRoute = AuthedRouteRouteImport.update({
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/_admin',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/_admin/route.lazy').then((d) => d.Route))
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -98,6 +104,11 @@ const QuizzesIndexRoute = QuizzesIndexRouteImport.update({
   path: '/quizzes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
   id: '/articles/',
   path: '/articles/',
@@ -106,6 +117,11 @@ const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
 const QuizzesIdRoute = QuizzesIdRouteImport.update({
   id: '/quizzes/$id',
   path: '/quizzes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesIdRoute = CoursesIdRouteImport.update({
+  id: '/courses/$id',
+  path: '/courses/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
@@ -122,7 +138,9 @@ const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/index.lazy').then((d) => d.Route),
+)
 const QuizzesIdResultsRoute = QuizzesIdResultsRouteImport.update({
   id: '/results',
   path: '/results',
@@ -137,60 +155,109 @@ const AdminAdminUsersIndexRoute = AdminAdminUsersIndexRouteImport.update({
   id: '/admin/users/',
   path: '/admin/users/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/users/index.lazy').then((d) => d.Route),
+)
 const AdminAdminResourcesIndexRoute =
   AdminAdminResourcesIndexRouteImport.update({
     id: '/admin/resources/',
     path: '/admin/resources/',
     getParentRoute: () => AdminRouteRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_admin/admin/resources/index.lazy').then((d) => d.Route),
+  )
 const AdminAdminQuizzesIndexRoute = AdminAdminQuizzesIndexRouteImport.update({
   id: '/admin/quizzes/',
   path: '/admin/quizzes/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/quizzes/index.lazy').then((d) => d.Route),
+)
+const AdminAdminCoursesIndexRoute = AdminAdminCoursesIndexRouteImport.update({
+  id: '/admin/courses/',
+  path: '/admin/courses/',
+  getParentRoute: () => AdminRouteRoute,
+} as any).lazy(() =>
+  import('./routes/_admin/admin/courses/index.lazy').then((d) => d.Route),
+)
 const AdminAdminContactsIndexRoute = AdminAdminContactsIndexRouteImport.update({
   id: '/admin/contacts/',
   path: '/admin/contacts/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/contacts/index.lazy').then((d) => d.Route),
+)
 const AdminAdminArticlesIndexRoute = AdminAdminArticlesIndexRouteImport.update({
   id: '/admin/articles/',
   path: '/admin/articles/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/articles/index.lazy').then((d) => d.Route),
+)
+const CoursesIdModulesModuleIdRoute =
+  CoursesIdModulesModuleIdRouteImport.update({
+    id: '/modules/$moduleId',
+    path: '/modules/$moduleId',
+    getParentRoute: () => CoursesIdRoute,
+  } as any)
 const AdminAdminResourcesCreateRoute =
   AdminAdminResourcesCreateRouteImport.update({
     id: '/admin/resources/create',
     path: '/admin/resources/create',
     getParentRoute: () => AdminRouteRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_admin/admin/resources/create.lazy').then((d) => d.Route),
+  )
 const AdminAdminResourcesIdRoute = AdminAdminResourcesIdRouteImport.update({
   id: '/admin/resources/$id',
   path: '/admin/resources/$id',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/resources/$id.lazy').then((d) => d.Route),
+)
 const AdminAdminQuizzesCreateRoute = AdminAdminQuizzesCreateRouteImport.update({
   id: '/admin/quizzes/create',
   path: '/admin/quizzes/create',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/quizzes/create.lazy').then((d) => d.Route),
+)
 const AdminAdminQuizzesIdRoute = AdminAdminQuizzesIdRouteImport.update({
   id: '/admin/quizzes/$id',
   path: '/admin/quizzes/$id',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/quizzes/$id.lazy').then((d) => d.Route),
+)
+const AdminAdminCoursesCreateRoute = AdminAdminCoursesCreateRouteImport.update({
+  id: '/admin/courses/create',
+  path: '/admin/courses/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any).lazy(() =>
+  import('./routes/_admin/admin/courses/create.lazy').then((d) => d.Route),
+)
+const AdminAdminCoursesIdRoute = AdminAdminCoursesIdRouteImport.update({
+  id: '/admin/courses/$id',
+  path: '/admin/courses/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any).lazy(() =>
+  import('./routes/_admin/admin/courses/$id.lazy').then((d) => d.Route),
+)
 const AdminAdminArticlesCreateRoute =
   AdminAdminArticlesCreateRouteImport.update({
     id: '/admin/articles/create',
     path: '/admin/articles/create',
     getParentRoute: () => AdminRouteRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_admin/admin/articles/create.lazy').then((d) => d.Route),
+  )
 const AdminAdminArticlesIdRoute = AdminAdminArticlesIdRouteImport.update({
   id: '/admin/articles/$id',
   path: '/admin/articles/$id',
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin/admin/articles/$id.lazy').then((d) => d.Route),
+)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -201,8 +268,10 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$id': typeof CoursesIdRouteWithChildren
   '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles/': typeof ArticlesIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/quizzes/': typeof QuizzesIndexRoute
   '/research/': typeof ResearchIndexRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -212,12 +281,16 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof AuthedDashboardIndexRoute
   '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/admin/courses/create': typeof AdminAdminCoursesCreateRoute
   '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
   '/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
   '/admin/resources/$id': typeof AdminAdminResourcesIdRoute
   '/admin/resources/create': typeof AdminAdminResourcesCreateRoute
+  '/courses/$id/modules/$moduleId': typeof CoursesIdModulesModuleIdRoute
   '/admin/articles/': typeof AdminAdminArticlesIndexRoute
   '/admin/contacts/': typeof AdminAdminContactsIndexRoute
+  '/admin/courses/': typeof AdminAdminCoursesIndexRoute
   '/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
   '/admin/resources/': typeof AdminAdminResourcesIndexRoute
   '/admin/users/': typeof AdminAdminUsersIndexRoute
@@ -231,8 +304,10 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$id': typeof CoursesIdRouteWithChildren
   '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles': typeof ArticlesIndexRoute
+  '/courses': typeof CoursesIndexRoute
   '/quizzes': typeof QuizzesIndexRoute
   '/research': typeof ResearchIndexRoute
   '/resources': typeof ResourcesIndexRoute
@@ -242,12 +317,16 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthedDashboardIndexRoute
   '/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/admin/courses/create': typeof AdminAdminCoursesCreateRoute
   '/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
   '/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
   '/admin/resources/$id': typeof AdminAdminResourcesIdRoute
   '/admin/resources/create': typeof AdminAdminResourcesCreateRoute
+  '/courses/$id/modules/$moduleId': typeof CoursesIdModulesModuleIdRoute
   '/admin/articles': typeof AdminAdminArticlesIndexRoute
   '/admin/contacts': typeof AdminAdminContactsIndexRoute
+  '/admin/courses': typeof AdminAdminCoursesIndexRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
   '/admin/resources': typeof AdminAdminResourcesIndexRoute
   '/admin/users': typeof AdminAdminUsersIndexRoute
@@ -264,8 +343,10 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$id': typeof CoursesIdRouteWithChildren
   '/quizzes/$id': typeof QuizzesIdRouteWithChildren
   '/articles/': typeof ArticlesIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/quizzes/': typeof QuizzesIndexRoute
   '/research/': typeof ResearchIndexRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -275,12 +356,16 @@ export interface FileRoutesById {
   '/_authed/dashboard/': typeof AuthedDashboardIndexRoute
   '/_admin/admin/articles/$id': typeof AdminAdminArticlesIdRoute
   '/_admin/admin/articles/create': typeof AdminAdminArticlesCreateRoute
+  '/_admin/admin/courses/$id': typeof AdminAdminCoursesIdRoute
+  '/_admin/admin/courses/create': typeof AdminAdminCoursesCreateRoute
   '/_admin/admin/quizzes/$id': typeof AdminAdminQuizzesIdRoute
   '/_admin/admin/quizzes/create': typeof AdminAdminQuizzesCreateRoute
   '/_admin/admin/resources/$id': typeof AdminAdminResourcesIdRoute
   '/_admin/admin/resources/create': typeof AdminAdminResourcesCreateRoute
+  '/courses/$id/modules/$moduleId': typeof CoursesIdModulesModuleIdRoute
   '/_admin/admin/articles/': typeof AdminAdminArticlesIndexRoute
   '/_admin/admin/contacts/': typeof AdminAdminContactsIndexRoute
+  '/_admin/admin/courses/': typeof AdminAdminCoursesIndexRoute
   '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
   '/_admin/admin/resources/': typeof AdminAdminResourcesIndexRoute
   '/_admin/admin/users/': typeof AdminAdminUsersIndexRoute
@@ -296,8 +381,10 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/articles/$slug'
+    | '/courses/$id'
     | '/quizzes/$id'
     | '/articles/'
+    | '/courses/'
     | '/quizzes/'
     | '/research/'
     | '/resources/'
@@ -307,12 +394,16 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/admin/articles/$id'
     | '/admin/articles/create'
+    | '/admin/courses/$id'
+    | '/admin/courses/create'
     | '/admin/quizzes/$id'
     | '/admin/quizzes/create'
     | '/admin/resources/$id'
     | '/admin/resources/create'
+    | '/courses/$id/modules/$moduleId'
     | '/admin/articles/'
     | '/admin/contacts/'
+    | '/admin/courses/'
     | '/admin/quizzes/'
     | '/admin/resources/'
     | '/admin/users/'
@@ -326,8 +417,10 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/articles/$slug'
+    | '/courses/$id'
     | '/quizzes/$id'
     | '/articles'
+    | '/courses'
     | '/quizzes'
     | '/research'
     | '/resources'
@@ -337,12 +430,16 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/admin/articles/$id'
     | '/admin/articles/create'
+    | '/admin/courses/$id'
+    | '/admin/courses/create'
     | '/admin/quizzes/$id'
     | '/admin/quizzes/create'
     | '/admin/resources/$id'
     | '/admin/resources/create'
+    | '/courses/$id/modules/$moduleId'
     | '/admin/articles'
     | '/admin/contacts'
+    | '/admin/courses'
     | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/users'
@@ -358,8 +455,10 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/articles/$slug'
+    | '/courses/$id'
     | '/quizzes/$id'
     | '/articles/'
+    | '/courses/'
     | '/quizzes/'
     | '/research/'
     | '/resources/'
@@ -369,12 +468,16 @@ export interface FileRouteTypes {
     | '/_authed/dashboard/'
     | '/_admin/admin/articles/$id'
     | '/_admin/admin/articles/create'
+    | '/_admin/admin/courses/$id'
+    | '/_admin/admin/courses/create'
     | '/_admin/admin/quizzes/$id'
     | '/_admin/admin/quizzes/create'
     | '/_admin/admin/resources/$id'
     | '/_admin/admin/resources/create'
+    | '/courses/$id/modules/$moduleId'
     | '/_admin/admin/articles/'
     | '/_admin/admin/contacts/'
+    | '/_admin/admin/courses/'
     | '/_admin/admin/quizzes/'
     | '/_admin/admin/resources/'
     | '/_admin/admin/users/'
@@ -391,8 +494,10 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   TermsRoute: typeof TermsRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
+  CoursesIdRoute: typeof CoursesIdRouteWithChildren
   QuizzesIdRoute: typeof QuizzesIdRouteWithChildren
   ArticlesIndexRoute: typeof ArticlesIndexRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
   QuizzesIndexRoute: typeof QuizzesIndexRoute
   ResearchIndexRoute: typeof ResearchIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
@@ -485,6 +590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizzesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/articles/': {
       id: '/articles/'
       path: '/articles'
@@ -497,6 +609,13 @@ declare module '@tanstack/react-router' {
       path: '/quizzes/$id'
       fullPath: '/quizzes/$id'
       preLoaderRoute: typeof QuizzesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/$id': {
+      id: '/courses/$id'
+      path: '/courses/$id'
+      fullPath: '/courses/$id'
+      preLoaderRoute: typeof CoursesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/articles/$slug': {
@@ -555,6 +674,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminQuizzesIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/_admin/admin/courses/': {
+      id: '/_admin/admin/courses/'
+      path: '/admin/courses'
+      fullPath: '/admin/courses/'
+      preLoaderRoute: typeof AdminAdminCoursesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_admin/admin/contacts/': {
       id: '/_admin/admin/contacts/'
       path: '/admin/contacts'
@@ -568,6 +694,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/articles/'
       preLoaderRoute: typeof AdminAdminArticlesIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/courses/$id/modules/$moduleId': {
+      id: '/courses/$id/modules/$moduleId'
+      path: '/modules/$moduleId'
+      fullPath: '/courses/$id/modules/$moduleId'
+      preLoaderRoute: typeof CoursesIdModulesModuleIdRouteImport
+      parentRoute: typeof CoursesIdRoute
     }
     '/_admin/admin/resources/create': {
       id: '/_admin/admin/resources/create'
@@ -597,6 +730,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminQuizzesIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/_admin/admin/courses/create': {
+      id: '/_admin/admin/courses/create'
+      path: '/admin/courses/create'
+      fullPath: '/admin/courses/create'
+      preLoaderRoute: typeof AdminAdminCoursesCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_admin/admin/courses/$id': {
+      id: '/_admin/admin/courses/$id'
+      path: '/admin/courses/$id'
+      fullPath: '/admin/courses/$id'
+      preLoaderRoute: typeof AdminAdminCoursesIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_admin/admin/articles/create': {
       id: '/_admin/admin/articles/create'
       path: '/admin/articles/create'
@@ -618,12 +765,15 @@ interface AdminRouteRouteChildren {
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
   AdminAdminArticlesIdRoute: typeof AdminAdminArticlesIdRoute
   AdminAdminArticlesCreateRoute: typeof AdminAdminArticlesCreateRoute
+  AdminAdminCoursesIdRoute: typeof AdminAdminCoursesIdRoute
+  AdminAdminCoursesCreateRoute: typeof AdminAdminCoursesCreateRoute
   AdminAdminQuizzesIdRoute: typeof AdminAdminQuizzesIdRoute
   AdminAdminQuizzesCreateRoute: typeof AdminAdminQuizzesCreateRoute
   AdminAdminResourcesIdRoute: typeof AdminAdminResourcesIdRoute
   AdminAdminResourcesCreateRoute: typeof AdminAdminResourcesCreateRoute
   AdminAdminArticlesIndexRoute: typeof AdminAdminArticlesIndexRoute
   AdminAdminContactsIndexRoute: typeof AdminAdminContactsIndexRoute
+  AdminAdminCoursesIndexRoute: typeof AdminAdminCoursesIndexRoute
   AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
   AdminAdminResourcesIndexRoute: typeof AdminAdminResourcesIndexRoute
   AdminAdminUsersIndexRoute: typeof AdminAdminUsersIndexRoute
@@ -633,12 +783,15 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAdminIndexRoute: AdminAdminIndexRoute,
   AdminAdminArticlesIdRoute: AdminAdminArticlesIdRoute,
   AdminAdminArticlesCreateRoute: AdminAdminArticlesCreateRoute,
+  AdminAdminCoursesIdRoute: AdminAdminCoursesIdRoute,
+  AdminAdminCoursesCreateRoute: AdminAdminCoursesCreateRoute,
   AdminAdminQuizzesIdRoute: AdminAdminQuizzesIdRoute,
   AdminAdminQuizzesCreateRoute: AdminAdminQuizzesCreateRoute,
   AdminAdminResourcesIdRoute: AdminAdminResourcesIdRoute,
   AdminAdminResourcesCreateRoute: AdminAdminResourcesCreateRoute,
   AdminAdminArticlesIndexRoute: AdminAdminArticlesIndexRoute,
   AdminAdminContactsIndexRoute: AdminAdminContactsIndexRoute,
+  AdminAdminCoursesIndexRoute: AdminAdminCoursesIndexRoute,
   AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
   AdminAdminResourcesIndexRoute: AdminAdminResourcesIndexRoute,
   AdminAdminUsersIndexRoute: AdminAdminUsersIndexRoute,
@@ -658,6 +811,18 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
 
 const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
   AuthedRouteRouteChildren,
+)
+
+interface CoursesIdRouteChildren {
+  CoursesIdModulesModuleIdRoute: typeof CoursesIdModulesModuleIdRoute
+}
+
+const CoursesIdRouteChildren: CoursesIdRouteChildren = {
+  CoursesIdModulesModuleIdRoute: CoursesIdModulesModuleIdRoute,
+}
+
+const CoursesIdRouteWithChildren = CoursesIdRoute._addFileChildren(
+  CoursesIdRouteChildren,
 )
 
 interface QuizzesIdRouteChildren {
@@ -683,8 +848,10 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   TermsRoute: TermsRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
+  CoursesIdRoute: CoursesIdRouteWithChildren,
   QuizzesIdRoute: QuizzesIdRouteWithChildren,
   ArticlesIndexRoute: ArticlesIndexRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
   QuizzesIndexRoute: QuizzesIndexRoute,
   ResearchIndexRoute: ResearchIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
